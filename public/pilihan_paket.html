@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilihan Paket</title>
+  <link rel="stylesheet" href="../app/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .login-box {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto; /* Pusatkan di layar */
+}
+
+@media (max-width: 768px) {
+    h4 {
+        font-size: 1.2rem; /* Sesuaikan ukuran teks untuk judul */
+    }
+
+    .form-label {
+        font-size: 0.9rem; /* Sesuaikan ukuran teks label */
+    }
+
+    .btn-block {
+        width: 100%; /* Tombol memakan lebar penuh */
+    }
+
+    .warning-text {
+        font-size: 0.8rem;
+    }
+}
+
+
+  </style>
+</head>
+<body class="hold-transition login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <b>Pilih Paket Langganan</b>
+    </div>
+    <div class="card">
+      <div class="card-body login-card-body">
+        <div id="greeting" class="text-center mb-3">
+          <h4>Selamat datang, <span id="username">Pengguna</span>!</h4>
+          <p>Pilih paket yang sesuai untuk pengalaman terbaik bersama kami!</p>
+        </div>
+        <form id="packageForm" action="/save-package" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+          <input type="hidden" id="userId" name="userId">
+          <input type="hidden" id="expirationDate" name="expirationDate">
+
+          <div class="mb-3">
+            <label for="package" class="form-label">Pilih Paket</label>
+            <select id="package" name="package" class="form-control" required onchange="updateTikTokInputs()">
+              <option value="">-- Pilih Paket --</option>
+              <option value="Silver">Silver - Rp. 100,000 untuk 3 bulan (1 username TikTok)</option>
+              <option value="Gold">Gold - Rp. 250,000 untuk 6 bulan (2 username TikTok)</option>
+              <option value="Platinum">Platinum - Rp. 500,000 untuk 1 tahun (3 username TikTok)</option>
+            </select>
+          </div>
+
+          <div id="tiktokInputs" class="mb-3"></div>
+
+          <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Metode Pembayaran</label>
+            <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+              <option value="">-- Pilih Metode Pembayaran --</option>
+              <option value="ovo">E-Wallet: OVO - 082334810232 a.n IBNU HARIF HALILI</option>
+              <option value="dana">E-Wallet: DANA - 082334810232 a.n IBNU HARIF HALILI</option>
+              <option value="gopay">E-Wallet: GoPay - 082334810232 a.n IBNU HARIF HALILI</option>
+              <option value="linkaja">E-Wallet: Link Aja - 082334810232 a.n IBNU HARIF HALILI</option>
+              <option value="seabank">Transfer Bank: Seabank - 901 8752 09277 a.n IBNU HARIF HALILI</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="proofUpload" class="form-label">Unggah Bukti Pembayaran</label>
+            <input type="file" id="proofUpload" name="proofUpload" class="form-control" accept="image/*" required>
+            <small class="warning-text">
+              Mohon unggah bukti asli! Bukti palsu akan menyebabkan akun dinonaktifkan.
+            </small>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-block">Kirim</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('/get-user-info')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Gagal mendapatkan data pengguna');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.userId) {
+            document.getElementById('userId').value = data.userId;
+            document.getElementById('username').textContent = data.username || "Pengguna";
+          } else {
+            window.location.href = '/user_login.html';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          window.location.href = '/user_login.html';
+        });
+    });
+
+    function updateTikTokInputs() {
+      const packageSelect = document.getElementById('package').value;
+      const tiktokInputsContainer = document.getElementById('tiktokInputs');
+      tiktokInputsContainer.innerHTML = '';
+
+      let numberOfInputs = 0;
+      if (packageSelect === 'Silver') numberOfInputs = 1;
+      else if (packageSelect === 'Gold') numberOfInputs = 2;
+      else if (packageSelect === 'Platinum') numberOfInputs = 3;
+
+      for (let i = 1; i <= numberOfInputs; i++) {
+        const inputDiv = document.createElement('div');
+        inputDiv.className = 'mb-3';
+        inputDiv.innerHTML = `
+          <label for="tiktokUsername${i}" class="form-label">Username TikTok ${i}</label>
+          <input type="text" class="form-control" id="tiktokUsername${i}" name="tiktokUsername${i}" placeholder="Masukkan username TikTok ${i}" required>
+        `;
+        tiktokInputsContainer.appendChild(inputDiv);
+      }
+    }
+
+    function validateForm() {
+      const package = document.getElementById('package').value;
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const proofUpload = document.getElementById('proofUpload').files.length;
+
+      if (!package || !paymentMethod || !proofUpload) {
+        alert("Mohon lengkapi semua data sebelum mengirim.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+</html>

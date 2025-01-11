@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Live Bubble | Registrasi Pengguna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/styles/overlayscrollbars.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../app/dist/css/adminlte.css">
+</head>
+<body class="hold-transition register-page">
+  <div class="register-box">
+    <div class="register-logo">
+      <b>Registrasi Pengguna</b>
+    </div>
+    <div class="card">
+      <div class="card-body register-card-body">
+        <p class="login-box-msg">Isi data berikut untuk mendaftar</p>
+        <form action="/user/register" method="POST">
+          <!-- Input Nama -->
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" name="name" placeholder="Nama Lengkap" required>
+            <div class="input-group-append">
+              <div class="input-group-text"><i class="bi bi-user"></i></div>
+            </div>
+          </div>
+          <!-- Input Nomor WhatsApp -->
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" name="phone_number" placeholder="Nomor WhatsApp" required>
+            <div class="input-group-append">
+              <div class="input-group-text"><i class="bi bi-whatsapp"></i></div>
+            </div>
+          </div>
+          <!-- Input Password -->
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+            <div class="input-group-append">
+              <div class="input-group-text"><i class="bi bi-lock"></i></div>
+            </div>
+          </div>
+          <!-- Input Konfirmasi Password -->
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" name="confirm_password" placeholder="Konfirmasi Password" required>
+            <div class="input-group-append">
+              <div class="input-group-text"><i class="bi bi-lock"></i></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <button type="submit" class="btn btn-primary btn-block">Daftar</button>
+            </div>
+          </div>
+        </form>
+        <div id="register-message" style="color: red; margin-top: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Menangkap pesan dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const message = urlParams.get('message');
+    if (message) {
+      document.getElementById("register-message").innerText = decodeURIComponent(message);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfirmasi Paket</title>
+  <link rel="stylesheet" href="../app/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .confirmation-box { width: 600px; }
+    .confirmation-card-body { padding: 20px; }
+    .info-text { font-size: 1em; color: #555; margin-bottom: 15px; }
+    .highlight { color: #dc3545; font-weight: bold; }
+  </style>
+</head>
+<body class="hold-transition login-page">
+  <div class="confirmation-box">
+    <div class="login-logo">
+      <b>Konfirmasi Paket</b>
+    </div>
+    <div class="card">
+      <div class="card-body confirmation-card-body">
+        <!-- Salam dan Informasi Pengguna -->
+        <div id="greeting" class="text-center mb-3">
+          <h4>Selamat datang, <span id="username">Pengguna</span>!</h4>
+          <p>Berikut adalah status pendaftaran paket Anda.</p>
+        </div>
+        
+        <!-- Detail Status Paket -->
+        <div class="info-text">
+          <p><strong>Nama Pengguna:</strong> <span id="userName"></span></p>
+          <p><strong>Nomor HP:</strong> <span id="phoneNumber"></span></p>
+          <p><strong>Status User:</strong> <span id="userStatus"></span></p>
+          <p><strong>Paket Terpilih:</strong> <span id="userPackage"></span></p>
+          <p><strong>Username TikTok 1:</strong> <span id="username_tiktok1">Tidak tersedia</span></p>
+          <p><strong>Username TikTok 2:</strong> <span id="username_tiktok2">Tidak tersedia</span></p>
+          <p><strong>Username TikTok 3:</strong> <span id="username_tiktok3">Tidak tersedia</span></p>
+        </div>
+
+        <!-- Instruksi Konfirmasi ke Admin -->
+        <p class="text-center highlight">
+          Segera hubungi admin melalui WhatsApp ke 
+          <a id="whatsappLink" href="https://wa.me/6282334810232" target="_blank">
+            082334810232
+          </a> untuk konfirmasi aktivasi akun Anda.
+        </p>
+        
+        <!-- Tombol Login -->
+        <div class="text-center mt-4">
+          <button onclick="redirectToLogin()" class="btn btn-primary btn-block">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Memuat data pengguna dari server
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('/get-user-info')
+        .then(response => response.json())
+        .then(data => {
+          if (data.userId) {
+            document.getElementById('username').textContent = data.username || "Pengguna";
+            document.getElementById('userName').textContent = data.username || "Pengguna";
+            document.getElementById('userStatus').textContent = data.status || "Tidak aktif";
+            document.getElementById('userPackage').textContent = data.package || "Belum dipilih";
+            document.getElementById('phoneNumber').textContent = data.phoneNumber || "Tidak tersedia";
+            document.getElementById('username_tiktok1').textContent = data.username_tiktok1 || "Tidak tersedia";
+            document.getElementById('username_tiktok2').textContent = data.username_tiktok2 || "Tidak tersedia";
+            document.getElementById('username_tiktok3').textContent = data.username_tiktok3 || "Tidak tersedia";
+
+            // Buat pesan WhatsApp otomatis
+            const message = `Salam Admin, saya ingin mengonfirmasi aktivasi akun *livebubble.online* saya.\n\nNama Pengguna: ${data.username}\nNomor HP: ${data.phoneNumber}\nPaket Terpilih: ${data.package}\n\nMohon untuk segera mengaktifkan akun saya. Terima kasih.`;
+
+            // Update link WhatsApp dengan pesan otomatis
+            const whatsappLink = document.getElementById('whatsappLink');
+            whatsappLink.href = `https://wa.me/6282334810232?text=${encodeURIComponent(message)}`;
+          } else {
+            window.location.href = '/user_login.html';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          window.location.href = '/user_login.html';
+        });
+    });
+
+    // Fungsi untuk mengarahkan ke halaman login
+    function redirectToLogin() {
+      window.location.href = '/user_login.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+abody {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+a {
+    color: #58a6ff;
+}
+
+
+   #petunjuk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px; /* Sesuaikan dengan lebar elemen */
+            height: 120px; /* Sesuaikan dengan tinggi elemen */
+            background-color: #212427;
+            color: #fff;
+            text-align: center;
+            line-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+        #animation-container span{
+          position: absolute;
+          color: #9e072a;
+        }
+
+    
+    #button-container {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+    }
+
+    #animation-container {
+      position: relative;
+    }
+
+    .photo {
+      position: absolute;
+      border-radius: 20px;
+      transition: transform 5s ease-in-out, opacity 2s ease-in-out; /* Sesuaikan durasi transisi sesuai kebutuhan */
+    }
+  /* Gaya untuk foto umum */
+.photo {
+    position: absolute;
+    border-radius: 20px;
+    transition: transform 5s ease-in-out, opacity 2s ease-in-out;
+}
+
+/* Gaya untuk foto kecil */
+.photo-small {
+    width: 50px;
+    height: 50px;
+}
+
+/* Gaya untuk foto sedang */
+.photo-medium {
+    width: 120px;
+    height: 120px;
+    z-index: 1;
+}
+
+/* Gaya untuk foto besar */
+.photo-large {
+    width: 250px;
+    height: 250px;
+    z-index: 2;
+}
+
+/* Gaya untuk foto super besar */
+.photo-superbig {
+    width: 70px;
+    height: 70px;
+    border-radius: 240px;
+    z-index: 2;
+    border: 5px solid transparent; /* Warna akan diatur lewat JavaScript */
+}
+
+/* Gaya untuk foto super medium */
+.photo-supermedium {
+    width: 120px;
+    height: 120px;
+    border-radius: 240px;
+    border: 5px solid transparent; /* Warna akan diatur lewat JavaScript */
+    z-index: 1;
+}
+

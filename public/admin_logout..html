@@ -1,0 +1,7 @@
+<a href="#" onclick="logoutAdmin()" class="btn btn-default btn-flat float-end">Sign out</a>
+<script>
+    function logoutAdmin() {
+        fetch('/admin_logout', { credentials: 'include' })
+            .then(() => window.location.href = '/admin_login.html');
+    }
+</script>

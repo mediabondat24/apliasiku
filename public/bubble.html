@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3CM2JCDYNF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3CM2JCDYNF');
+  </script>
+<style>
+   #petunjuk {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px; /* Sesuaikan dengan lebar elemen */
+            height: 120px; /* Sesuaikan dengan tinggi elemen */
+            background-color: #212427;
+            color: #fff;
+            text-align: center;
+            line-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+        #animation-container span{
+          position: absolute;
+          color: #9e072a;
+        }
+</style>
+
+<style>
+    
+    #button-container {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+    }
+
+    #animation-container {
+      position: relative;
+    }
+
+    .photo {
+      position: absolute;
+      border-radius: 20px;
+      transition: transform 5s ease-in-out, opacity 2s ease-in-out; /* Sesuaikan durasi transisi sesuai kebutuhan */
+    }
+  </style>
+
+ 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok LIVE</title> 
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=s7MjjIgj"></script>
+
+    <script src="connection.js"></script>
+    <script src="app.js"></script>
+    <script>
+    // Periksa apakah pengguna memiliki akses
+    document.addEventListener("DOMContentLoaded", function() {
+    fetch('/user/tiktok-accounts')
+        .then(response => {
+            if (response.status === 401) {
+                alert("Anda harus login untuk mengakses halaman ini.");
+                window.location.href = '/user_login.html';
+                return;
+            }
+            return response.json();
+        })
+        .then(data => {
+            const selectElement = document.getElementById('uniqueIdInput');
+
+            // Menambahkan opsi akun TikTok jika ada
+            if (data.username_tiktok1) {
+                const option1 = document.createElement('option');
+                option1.value = data.username_tiktok1;
+                option1.textContent = data.username_tiktok1;
+                selectElement.appendChild(option1);
+            }
+
+            if (data.username_tiktok2) {
+                const option2 = document.createElement('option');
+                option2.value = data.username_tiktok2;
+                option2.textContent = data.username_tiktok2;
+                selectElement.appendChild(option2);
+            }
+
+            if (data.username_tiktok3) {
+                const option3 = document.createElement('option');
+                option3.value = data.username_tiktok3;
+                option3.textContent = data.username_tiktok3;
+                selectElement.appendChild(option3);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+  </script>
+  <script>
+    fetch('/user/profile')
+    .then(response => {
+        if (response.status === 401) {
+            alert("Anda harus login untuk mengakses halaman ini.");
+            window.location.href = '/user_login.html';
+        } else {
+            return response.json();
+        }
+    })
+    .then(data => {
+        // Tampilkan data profil atau lakukan sesuatu jika pengguna login
+        console.log(data);
+    })
+    .catch(error => console.error('Error:', error));
+  </script>
+
+    
+   
+</head>
+<body style="background-size: cover;">
+  <div id="petunjuk">
+    <h3>OKE KEREN!! TOMBOL PENGATURAN ADA DIBAWAH</h3>
+</div>
+    <div id="animation-container">
+        <!-- Animasi foto akan ditampilkan di sini -->
+         
+      </div>
+<center>
+
+    <button class="btn btn-primary" style="position: absolute;margin-top:1000px;margin-left:-60px" onclick="openmodal()">PENGATURAN</button>
+    <br><br>
+</center>
+   
+   
+    
+
+
+      <div class="card-body">
+ </div>
+
+        
+
+
+
+
+<!-- <div id="button-containers">
+    <button onclick="addPhoto('small')">Tambah Foto Kecil</button>
+    <input type="number" id="smallDuration" placeholder="Durasi Kecil (detik)" />
+    <button onclick="addPhoto('medium')">Tambah Foto Sedang</button>
+    <input type="number" id="mediumDuration" placeholder="Durasi Sedang (detik)" />
+    <button onclick="addPhoto('large')">Tambah Foto Besar</button>
+    <input type="number" id="largeDuration" placeholder="Durasi Besar (detik)" />
+    <button onclick="resizePhoto('small')">Kecilkan Foto</button>
+    <button onclick="resizePhoto('medium')">Normalkan Foto</button>
+    <button onclick="resizePhoto('large')">Perbesar Foto</button>
+    <button onclick="changeSpeed('slow')">Perlahan</button>
+    <button onclick="changeSpeed('fast')">Cepat</button>
+  </div> -->
+   
+
+</body>
+ </html>
+  
+
+<script>  
+setTimeout(() => {
+  openmodal();
+  // masukanpoto();
+
+}, 500);
+
+function masukanpoto(){
+  var img = "https://img.freepik.com/premium-vector/tik-tok-logo_578229-290.jpg";
+  addPhoto("small",img);
+  addPhoto("small",img);
+  addPhoto("small",img);
+ 
+}
+function tutupmodal(){
+ 
+  scrollToTop();
+  $("#addPhotoModal").modal("hide");
+  petunjuk();
+}
+function petunjuk(){
+
+  setTimeout(() => {
+    $("#petunjuk").hide(3000);
+  }, 6000);
+  setTimeout(() => {
+    masukanpoto();
+  }, 4000);
+   
+}
+
+    function toggleFullScreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+
+            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const exitFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+            if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+                requestFullScreen.call(docEl);
+            } else {
+                exitFullScreen.call(doc);
+            }
+        }
+     
+
+       
+var no =1;
+var jawab = "xmxmxmmx";
+var alias = "xmxmxmmx";
+var koin=0;
+var mode = "soal";
+
+ 
+ 
+  
+$(".chatcontainer").show();
+$(".chatcontainer2").hide();
+$(".chatcontainer3").hide();
+function jawaban(komentar,poto,nama){
+     
+  
+} 
+
+ var ganti=true;
+ 
+ function okey(foto,nama,g=false){
+   
+   
+        $("#namas").html(nama);
+        var element = document.getElementById("g");
+        element.src= foto;  
+         
+        
+ }
+
+ function bahaya(){
+  var element = document.getElementById("g");
+        element.src= "https://img.freepik.com/premium-vector/tik-tok-logo_578229-290.jpg"; 
+ }
+ 
+ 
+      var start=true;
+      
+      function jo(){
+         if(start==true){
+             start=false;
+         }else{
+               start=true;
+         }
+      }
+
+    function hapus_class(){
+      $("#g").hide(300);
+      $("#g").show(1000);
+    }  
+
+    function add_class(){
+      $("#g").hide(300);
+      $("#g").show(1000);
+    }  
+      
+     function gift(foto,nama,sts=false,g=false,ket=null,kom=null,jml_coin=1){
+      var gift = document.getElementById("gift");
+if (gift.checked) {
+  var opsi_gift = true;
+} else {
+  var opsi_gift = false;
+}
+
+var follow = document.getElementById("follow");
+if (follow.checked) {
+  var opsi_follow = true;
+} else {
+  var opsi_follow = false;
+}
+
+var share = document.getElementById("share");
+if (share.checked) {
+  var opsi_share = true;
+} else {
+  var opsi_share = false;
+}
+
+var like = document.getElementById("like");
+if (like.checked) {
+  var opsi_like = true;
+} else {
+  var opsi_like = false;
+}
+
+var join = document.getElementById("join");
+if (join.checked) {
+  var opsi_join = true;
+} else {
+  var opsi_join = false;
+}
+var key = document.getElementById("key");
+if (key.checked) {
+  var opsi_key = true;
+} else {
+  var opsi_key = false;
+}
+
+ 
+
+        //  if(start==false){
+        //       if(sts==false){
+        //              return false;
+        //       }
+        //  }
+         
+         if(sts==true && ganti==true){
+          console.log("jml"+jml_coin);
+        var min_coin = $("[name='min_coin']").val();
+        console.log("min"+min_coin);
+     
+
+          if(jml_coin>=min_coin){
+                ganti=false;
+                if(opsi_gift==true){
+                  
+                  add_class();
+
+                  okey(foto,nama,g); 
+                  setTimeout(() => {
+                                    ganti=true;
+                      },7000);
+                      return true;
+                }else{
+                  ganti=true;
+                }
+            }
+                
+         }
+         
+          if(sts==true && ganti==false){ 
+            console.log("jml"+jml_coin);
+var min_coin = $("[name='min_coin']").val();
+console.log("min"+min_coin);
+
+
+            if(jml_coin>=min_coin){
+              if(opsi_gift==true){
+                add_class();
+
+                  setTimeout(() => {
+                        okey(foto,nama,g); 
+                  
+                    },5000);
+                    
+                    setTimeout(() => {
+                                  ganti=true;
+                    },10000);
+                  }else{
+                    ganti=true;
+                  }
+              }
+               
+          }
+          
+    if(ket=="like" && opsi_like==true)      
+    {      
+            if(sts==false && ganti==true){ 
+              hapus_class();
+                            okey(foto,nama); 
+                                    ganti=true; 
+            }
+    }
+
+   else if(ket=="share" && opsi_share==true)      
+    {      
+            if(sts==false && ganti==true){ 
+              hapus_class();
+                            okey(foto,nama); 
+                                    ganti=true; 
+            }
+    }
+
+   else if(ket=="follow" && opsi_follow==true)      
+    {      
+            if(sts==false && ganti==true){ 
+              hapus_class();
+                            okey(foto,nama); 
+                                    ganti=true; 
+            }
+    }
+    else if(ket=="join" && opsi_join==true)      
+    {      
+            if(sts==false && ganti==true){ 
+              hapus_class();
+                            okey(foto,nama); 
+                                    ganti=true; 
+            }
+    }
+    else if(ket=="chat" && opsi_key==true)      
+    {      
+      var komentar_system = kom;
+           var komen_status = false;
+             var keyword = $("[name='komentar']").val();
+              const isKeywordExists = komentar_system.toLowerCase().includes(keyword.toLowerCase());
+              if(isKeywordExists!=false){ 
+                var komen_status = true;
+              }else if(keyword==""){
+                var komen_status = true;
+              }
+            if(sts==false && ganti==true && komen_status==true){ 
+              hapus_class();
+                            okey(foto,nama); 
+                                    ganti=true; 
+            }
+    }
+
+    
+
+
+
+
+               
+     }
+         
+  
+
+</script>
+
+ 
+
+
+
+
+
+
+<!-- <script>
+  var u=1; var poto1=""; var poto2="";
+  function match(poto){
+    if(u==1){
+
+    }
+
+  }
+</script> -->
+
+
+
+
+
+
+<script>
+    let photoCount = 0;
+    let speed = 5000; // Kecepatan default, diatur dalam milidetik
+
+    function addPhoto(size,img,coint=1) {
+
+
+
+      const photo = document.createElement('img');
+      photo.src = img; // Ganti dengan nama foto Anda
+      photo.classList.add('photo');
+      
+      photo.id = `photo-${photoCount}`;
+      
+      const span = document.createElement('span');
+span.appendChild(photo);
+
+const container = document.getElementById('animation-container');
+container.appendChild(span);
+
+      let durationInput;
+   
+    
+    if (size === 'small') {
+        photo.style.width = '50px';
+        photo.style.height = '50px';
+        durationInput = document.getElementById('smallDuration');
+        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
+        var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
+        photo.style.border = '2px solid ' + randomColor;
+        photo.style.boxShadow = '0 0 30px ' + randomColor;
+      } else if (size === 'medium') {
+        photo.style.width = '120px';
+        photo.style.height = '120px';
+        durationInput = document.getElementById('mediumDuration');
+        photo.style.zIndex = coint;
+        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
+        var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
+        photo.style.border = '2px solid ' + randomColor;
+        photo.style.boxShadow = '0 0 30px ' + randomColor;
+      } else if (size === 'large') {
+        photo.style.width = '250px';
+        photo.style.height = '250px';
+        durationInput = document.getElementById('largeDuration');
+        photo.style.zIndex = coint+1;
+        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
+        var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
+        photo.style.border = '2px solid ' + randomColor;
+        photo.style.boxShadow = '0 0 20px ' + randomColor;
+      }else if (size === 'supermedium') {
+        photo.style.width = '120px';
+        photo.style.height = '120px';
+        photo.style.borderRadius = '240px';
+        durationInput = document.getElementById('mediumDuration');
+        photo.style.zIndex = coint;
+       var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
+        var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
+        photo.style.border = '2px solid ' + randomColor;
+        photo.style.boxShadow = '0 0 30px ' + randomColor;
+      }else if (size === 'supersmall') {
+        photo.style.width = '70px';
+        photo.style.height = '70px';
+        photo.style.borderRadius = '240px';
+        durationInput = document.getElementById('smallDuration');
+        photo.style.zIndex = coint;
+        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
+        var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
+        photo.style.border = '2px solid ' + randomColor;
+        photo.style.boxShadow = '0 0 30px ' + randomColor;
+      }
+
+      const fadeoutDuration = durationInput ? parseInt(durationInput.value) * 1000 : 120000; // default 2 menit
+
+      movePhoto(photo.id, fadeoutDuration);
+      
+      photoCount++;
+    }
+    
+    
+    
+    
+
+    function movePhoto(photoId, fadeoutDuration) {
+      const photo = document.getElementById(photoId);
+      if(photo===null){
+          return false;
+      }
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      
+      const randomX = Math.floor(Math.random() * (screenWidth - parseInt(photo.style.width, 10))); 
+      const randomY = Math.floor(Math.random() * (screenHeight - parseInt(photo.style.height, 10))); 
+      
+      photo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+      
+      setTimeout(() => {
+        fadeOutPhoto(photo.id);
+      }, fadeoutDuration);
+
+      setTimeout(() => {
+        movePhoto(photoId, fadeoutDuration);
+      }, speed); // Menggerakkan foto sesuai kecepatan yang diatur
+    }
+
+    function resizePhoto(size) {
+      const photos = document.querySelectorAll('.photo');
+      photos.forEach(photo => {
+        const currentWidth = parseInt(photo.style.width, 10) || 100;
+        const currentHeight = parseInt(photo.style.height, 10) || 100;
+
+        if (size === 'small') {
+          photo.style.width = `${Math.max(currentWidth - 20, 50)}px`;
+          photo.style.height = `${Math.max(currentHeight - 20, 50)}px`;
+        } else if (size === 'medium') {
+          photo.style.width = '150px';
+          photo.style.height = '150px';
+        } else if (size === 'large') {
+          photo.style.width = `${Math.min(currentWidth + 20, 300)}px`;
+          photo.style.height = `${Math.min(currentHeight + 20, 300)}px`;
+        }
+      });
+    }
+
+    function changeSpeed(newSpeed) {
+      if (newSpeed === 'slow') {
+        speed = 10000; // Kecepatan lambat, diatur dalam milidetik
+      } else if (newSpeed === 'fast') {
+        speed = 3000; // Kecepatan cepat, diatur dalam milidetik
+      }
+    }
+
+    function fadeOutPhoto(photoId) {
+      const photo = document.getElementById(photoId);
+          if(photo!==null){
+          photo.style.opacity = '0';
+          setTimeout(() => {
+            photo.remove();
+          }, 2000); // Fading selama 2 detik, sesuaikan dengan kebutuhan Anda
+      }
+    }
+
+    // Otomatis tambahkan satu foto kecil saat halaman dimuat
+    // addPhoto('small');
+
+
+    function openmodal(){
+    $("#addPhotoModal").modal("show");
+ }
+    function tutup(){
+    $("#addPhotoModal").modal("hide");
+ }
+  </script>
+
+
+
+
+
+ 
+ <div class="modal fade" id="addPhotoModal"  aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPhotoModalLabel">Pengaturan</h5>
+          <button class='btn btn-danger btn-sm' id="togel" onclick="toggleFullScreen();">FULLSCREEN</button>
+          
+        </div>
+        <div class="modal-body">
+          
+            
+
+        <pre id="stateText"  style="color:rgb(16, 12, 12)"></pre>
+          
+          <div class="inputFields" id="hidex"> 
+            <center>
+              <input type="button" id="connectButton" value="connect">
+              <button id="togel" onclick="cek_server();">CEK SERVER</button>
+              <button type="button"   onclick="tutupmodal()" >TUTUP</button>
+            </center>
+          </div>
+          </div>
+    <div class="card">
+    <div class="card-body pd-4">
+<table>
+  <tr>
+    <td colspan="2"><b>PENGATURAN</b></td>
+  </tr>
+  <tr>
+    <td style="width:200px">
+      Akun
+    </td>
+    <td>
+      <select id="uniqueIdInput" class="form-control">
+    </select> 
+    </td>
+  </tr>
+   <tr>
+      <td colspan="2"><hr>Musik dari link youtube 
+     
+
+ <input type="text" id="youtubeURL" placeholder="Masukkan URL Video YouTube" class="form-control" onchange="playAudio()">
+   
+<label for="volumeRange"> Volume:</label>
+    <input type="range" id="volumeRange" min="0" max="100" value="25"><br>
+    
+    <div id="player" ></div>
+    
+    </td>
+  </tr>
+  <tr>
+      <td colspan="2"><hr>Musik dari File Mp3   
+
+<input type="file" id="musik" name="musik" accept=".mp3, .wav"  class="form-control" >
+   
+    <audio controls loop id="audioPlayer" style="display:none;">
+        Your browser does not support the audio element.
+    </audio></td>
+    <hr>
+  </tr>
+  <tr>
+    <td colspan="2">
+        <hr>
+        <b>DURASI MUNCUL PHOTO </b>
+        <div style="padding:5px">
+            <label class="form-check-label" for="gift">
+                Photo kecil  <input type="number"   style="max-width: 70px;" id="smallDuration" value="30">   Detik
+            </label>
+        </div>
+        <div style="padding:5px">
+            <label class="form-check-label" for="gift">
+               Photo sedang  <input type="number"   style="max-width: 70px;"  id="mediumDuration" value="50">   Detik
+            </label>
+        </div>
+        <div style="padding:5px">
+            <label class="form-check-label" for="gift">
+                Photo besar  <input type="number"   style="max-width: 70px;" id="largeDuration" value="60">   Detik
+            </label>
+        </div>
+
+      <hr>
+      <!-- <b>OPSI MUNCUL FHOTO</b>  
+   
+      <div class="form-check">
+        <input name="gift" checked class="form-check-input" type="checkbox" id="gift">
+        <label class="form-check-label" for="gift">
+            GIFT   <input type="hidden" size="10" id="min_coin" style="max-width: 70px;" name="min_coin" value="1" placeholder="minimal koin untuk muncul foto">
+        </label>
+    </div>
+    <div class="form-check">
+      <input name="follow" checked class="form-check-input" type="checkbox" id="follow">
+      <label class="form-check-label" for="follow">
+          FOLLOW
+      </label>
+  </div>
+  <div class="form-check">
+    <input name="share" class="form-check-input" type="checkbox" id="share">
+    <label class="form-check-label" for="share">
+        SHARE
+    </label>
+</div>
+  <div class="form-check">
+      <input name="join" class="form-check-input" type="checkbox" id="join">
+      <label class="form-check-label" for="join">
+          JOIN
+      </label>
+  </div>
+  <div class="form-check">
+    <input name="like" class="form-check-input" type="checkbox" id="like">
+    <label class="form-check-label" for="like">
+        LIKE
+    </label>
+</div> -->
+
+<!-- <div class="form-check">
+  <input name="key" class="form-check-input" type="checkbox" id="key">
+  <label class="form-check-label" for="key">
+      KOMENTAR <input type="text" id="komentar" name="komentar" value="keren" placeholder="kosongkan = semua koment muncul foto">
+  </label>
+</div> -->
+<table>
+  <tr>
+    <td><b>KECEPATAN PERGERAKAN PHOTO</b></td>
+    <td>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-primary" onclick="changeSpeed('slow')">Perlahan</button>
+        <button class="btn btn-sm btn-danger" onclick="changeSpeed('fast')">Cepat</button></button>
+      </div>
+
+    </td>
+  </tr>
+</table>
+
+
+
+<hr>
+ <b>AKTIKAN SUARA GOOGLE</b><br>
+ <i class="text-danger">Mohon maaf untuk suara masih belum stabil, masih kami sempurnakan</i>
+<div class="form-check">
+  <input name="vkomen" checked class="form-check-input" type="checkbox" id="vkomen">
+  <label class="form-check-label" for="vkomen">
+      KOMENTAR DIBACA GOOGLE
+  </label>
+</div>
+
+<div class="form-check">
+  <input name="vjoin" checked class="form-check-input" type="checkbox" id="vjoin">
+  <label class="form-check-label" for="vjoin">
+      UCAPAN SELAMAT DATANG UNTUK YANG JOIN
+  </label>
+</div>
+
+
+<div class="form-check">
+  <input name="vgift" checked class="form-check-input" type="checkbox" id="vgift">
+  <label class="form-check-label" for="vgift">
+      UCAPAN TERIMAKASIH UNTUK YANG GIFT
+  </label>
+</div>
+
+<div class="form-check">
+  <input name="vfollow"   class="form-check-input" type="checkbox" id="vfollow">
+  <label class="form-check-label" for="vfollow">
+      UCAPAN TERIMAKASIH UNTUK YANG FOLLOW
+  </label>
+</div>
+
+<div class="form-check">
+  <input name="vshare" checked class="form-check-input" type="checkbox" id="vshare">
+  <label class="form-check-label" for="vshare">
+      UCAPAN TERIMAKASIH UNTUK YANG SHARE
+  </label>
+</div>
+
+<hr>
+<b>OPSI SUARA :</b><br>
+<select class="form-control" id="opsi_suara">
+  <option value="1">Lucu (contoh: selamat bergabung kak sherina yang baik hati) </option>
+  <option value="2">Biasa (contoh: selamat bergabung kak sherina )</option>
+</select>
+
+<hr>
+Background  
+<input type="file" id="background-input" class="form-control" accept="image/*" onchange="changeBackground(event)">
+<br>
+<div id="gradient-box" style="width:100%;height:50px"></div>
+<button class="btn btn-block btn-mini btn-primary" onclick="gra()">Pilih Warna latar belakang</button>
+<br><br>
+  <!-- Radio button untuk mengatur tata letak latar belakang -->
+  <!-- <div class="form-check">
+    <input class="form-check-input" type="radio" name="backgroundLayout" id="coverLayout" value="cover" checked>
+    <label class="form-check-label" for="coverLayout">
+      Cover
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="backgroundLayout" id="repeatLayout" value="repeat">
+    <label class="form-check-label" for="repeatLayout">
+      Repeat
+    </label>
+  </div> -->
+
+    </td> 
+  </tr>
+
+  <!-- <tr>
+    <td colspan="2">
+      <hr>
+      <b>TEKS BAWAH FOTO</b><br>
+      <textarea class="form-control" style="min-width:350px;border:black solid 1px;height:150px" onkeyup="ubah_teks(this.value)">Jangan D! G! Ft
+nanti fotomu muncul</textarea>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    </td>
+  </tr> -->
+  <tr>
+    <td colspan="2">
+   <div id="roomStats" style="color:black;"></div>
+           
+    </table>
+
+
+    </td>
+  </tr>
+    
+</table>
+</div>
+</div>
+
+
+
+            
+        </div>
+       
+      </div>
+    </div>
+  </div>
+
+
+
+<script>
+   function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+            let colors = [];
+            for (let i = 0; i < 1; i++) {
+                let color = '#';
+                for (let j = 0; j < 6; j++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                colors.push(color);
+            }
+            return colors.join(', ');
+        }
+  function getRandomDirection() {
+            const directions = ['to right', 'to left'];
+            return directions[Math.floor(Math.random() * directions.length)];
+        }
+  function gra(){
+            const startColor = getRandomColor();
+            const endColor = getRandomColor();
+            const direction = getRandomDirection();
+
+            const gradientBox = document.getElementById('gradient-box');
+            gradientBox.style.background = `linear-gradient(${direction}, ${startColor}, ${endColor})`;
+
+            document.body.style.background = `linear-gradient(${direction}, ${startColor}, ${endColor})`;
+    
+  }
+     // Fungsi untuk mengatur tata letak latar belakang
+    //  document.querySelector('input[name="backgroundLayout"]').addEventListener('change', function() {
+    //   const selectedLayout = document.querySelector('input[name="backgroundLayout"]:checked').value;
+    //   document.body.style.backgroundSize = selectedLayout;
+    //   document.body.style.backgroundRepeat = selectedLayout === 'cover' ? 'no-repeat' : 'repeat';
+    // });
+    
+    function changeBackground(event) {
+      const fileInput = event.target;
+      const file = fileInput.files[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.body.style.backgroundImage = `url('${e.target.result}')`;
+          document.body.style.backgroundSize="cover";
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+  
+
+var sumber=false;
+
+
+function hapusAngkaDanSimbol(string) {
+  // Ekspresi reguler untuk mencocokkan huruf dan spasi
+  let regex = /[a-zA-Z\s]/g;
+  
+  // Menggunakan metode replace() untuk mengganti semua karakter yang tidak cocok dengan string kosong
+  let stringHanyaHurufDanSpasi = string.replace(/[^a-zA-Z\s]/g, '');
+
+  return stringHanyaHurufDanSpasi;
+}
+
+        var isSpeaking = false;
+         let voices = [];
+        function populateVoiceList() {
+            voices = window.speechSynthesis.getVoices();
+        }
+
+        function aktifSuaraKomen(text) {
+              var suara_filter = hapusAngkaDanSimbol(text);
+                let jumlahKarakter = suara_filter.length;
+                if(jumlahKarakter<5){
+                   return false;
+               }
+   
+   
+   
+            // Hentikan suara yang sedang berbicara
+            if (isSpeaking) { 
+                return false;
+            }
+            
+            isSpeaking = true;
+
+            // Ambil teks dari textarea
+         
+            var utterance = new SpeechSynthesisUtterance(text);
+
+            // Setel parameter suara
+            utterance.lang = 'id-ID'; // Bahasa Indonesia
+            utterance.pitch = 1; // Nada
+            utterance.rate = 1; // Kecepatan
+            utterance.volume = 1; // Volume
+
+            // Pilih suara dari daftar suara yang tersedia
+            const indonesianVoice = voices.find(voice => voice.lang === 'id-ID');
+            if (indonesianVoice) {
+                utterance.voice = indonesianVoice;
+            } else {
+                console.warn('Suara bahasa Indonesia tidak ditemukan.');
+            }
+
+            // Tambahkan event listener untuk mengetahui kapan teks selesai dibunyikan
+            utterance.onend = function(event) {
+                 isSpeaking=false;
+            };
+
+            // Mulai berbicara
+            window.speechSynthesis.speak(utterance);
+ 
+        }
+
+        // Pastikan suara sudah dimuat sebelum memanggil speak()
+        window.speechSynthesis.onvoiceschanged = function() {
+            populateVoiceList();
+        };
+
+        // Inisialisasi daftar suara saat halaman dimuat
+        populateVoiceList();
+        
+        
+/*function aktifSuaraKomen(text) {
+    
+       var suara_filter = hapusAngkaDanSimbol(text);
+    let jumlahKarakter = suara_filter.length;
+    if(jumlahKarakter<5){
+       return false;
+   }
+   
+    return new Promise((resolve, reject) => {
+        var utterance = new SpeechSynthesisUtterance();
+        var voices = window.speechSynthesis.getVoices();
+        utterance.lang = 'id-ID'; // 'id-ID' is the language code for Indonesian
+        utterance.voice = voices[11]; //set default google bahasa indonesia
+        utterance.rate = 10 / 10;
+        utterance.pitch = 1;
+        utterance.text = text;
+
+        utterance.onstart = function (event) {
+            isSpeaking = true;
+        };
+        utterance.onend = function (event) {
+            isSpeaking = false;
+        };
+        utterance.onerror = function (event) {
+            isSpeaking = false;
+        };
+
+        window.speechSynthesis.speak(utterance);
+    });
+  }
+  */
+  
+  
+/*function aktifSuaraKomen(suara){
+    
+    
+    
+      var vkomen = document.getElementById("vkomen");
+      if (vkomen.checked) {
+    
+     
+      
+      
+    var suara_filter = hapusAngkaDanSimbol(suara);
+    let jumlahKarakter = suara_filter.length;
+   if(jumlahKarakter<5){
+       return false;
+   }
+         
+       var  voice = "Indonesian Female";
+          
+
+          responsiveVoice.speak(suara_filter, voice, {
+            rate: 0.9,
+            pitch: 1,
+            volume: 3,
+            enableEstimationTimeout:false
+          });
+          
+          
+    }  
+    
+}*/
+
+function aktifSuara(suaras,jenis){
+
+      var suara_ =  suaras.toLowerCase();
+      let suar = suara_.replace(/cara/g, "metode");
+      let suara = suar.replace(/kontol/g, "");
+      
+      var vgift = document.getElementById("vgift");
+      if (vgift.checked && jenis=="gift") {
+        if(responsiveVoice.isPlaying() && sumber!=true) {
+          responsiveVoice.cancel();
+        }
+        sumber = true;
+      
+          if(!responsiveVoice.isPlaying()) {
+            sumber = true;
+            bunyi(suara,jenis);  
+            }else{
+              sumber=true;
+              setTimeout(() => {
+                sumber=true;
+                bunyi(suara,jenis);
+              }, 2500);
+            }   
+            
+            setTimeout(() => {
+          sumber=false;
+        }, 15000);
+
+      }  
+  
+  
+      var vkomen = document.getElementById("vkomen");
+      if (vkomen.checked && jenis=="komen") {
+        if(sumber!=true){
+          if(!responsiveVoice.isPlaying()) {
+            bunyi(suara,jenis);  
+            }
+          }  
+      }  
+   
+      var vjoin = document.getElementById("vjoin");
+      if (vjoin.checked && jenis=="join") {
+        if(sumber!=true){
+          if(!responsiveVoice.isPlaying()) {
+            bunyi(suara,jenis);  
+            }
+          }  
+
+      }  
+    
+      var vshare = document.getElementById("vshare");
+      if (vshare.checked && jenis=="share") {
+          if(sumber!=true){
+          if(!responsiveVoice.isPlaying()) {
+            bunyi(suara,jenis);  
+            }
+          }  
+           
+      }
+  
+      var vfollow = document.getElementById("vfollow");
+      if (vfollow.checked && jenis=="follow") {
+        if(sumber!=true){
+          if(!responsiveVoice.isPlaying()) {
+            bunyi(suara,jenis);  
+            }
+          }  
+             
+      }  
+  
+   
+  
+      }
+
+
+  var vo=1; var asbun="";
+  function bunyi(suara,jenis){
+    if(asbun==suara){
+      return false;
+    } 
+    asbun=suara;
+    if(jenis!="gift" && sumber==true){
+      responsiveVoice.cancel();
+    }
+    if(responsiveVoice.isPlaying()){
+      // responsiveVoice.cancel(); 
+      return false;
+    }else{
+
+      if(vo==1){
+               vo=2;
+                 voice = "Indonesian Female";
+           }else{
+               vo=1;
+                  voice = "Indonesian Male";
+           }
+
+          responsiveVoice.speak(suara, voice, {
+            rate: 0.9,
+            pitch: 1,
+            volume: 3,
+            enableEstimationTimeout:false
+          });
+
+    }
+          
+  }
+</script>
+
+ 
+
+
+
+
+<script>
+function reloadMainPageFromIframe() {
+  // Mengirim pesan ke halaman utama untuk memuat ulang
+  parent.postMessage({
+    type: 'reloadMainPage'
+  }, '*');
+}
+</script>
+
+
+
+<!-- Script JavaScript untuk mengganti elemen select dengan elemen input -->
+
+
+<script>
+  // Fungsi untuk melakukan scroll
+  function scrollDown() {
+    // Menentukan elemen yang akan dijadikan batas scroll
+    var stopElement = document.getElementById('stopScroll');
+
+    // Menentukan langkah scroll per interval (misalnya, 5 piksel)
+    var scrollStep = 5;
+
+    // Melakukan scroll setiap 10 milidetik
+  
+      // Menambahkan langkah scroll ke posisi scroll saat ini
+      window.scrollBy(0, scrollStep);
+
+       
+ 
+  }
+
+   
+  setTimeout(() => {
+    scrollDown();
+  }, 500);
+</script>
+
+
+<script>
+  // Fungsi untuk melakukan scroll ke atas
+  function scrollToTop() {
+    // Menentukan langkah scroll per interval (misalnya, 5 piksel)
+    var scrollStep = -5;
+
+    // Melakukan scroll setiap 10 milidetik
+    var scrollInterval = setInterval(function() {
+      // Menambahkan langkah scroll ke posisi scroll saat ini
+      window.scrollBy(0, scrollStep);
+
+      // Menghentikan scroll saat mencapai bagian atas dokumen
+      if (window.scrollY <= 0) {
+        clearInterval(scrollInterval);
+      }
+    }, 10);
+  }
+
+
+
+
+
+  setTimeout(() => {
+    if(!modeapp){
+    $("#togel").show();
+    $("#exit").hide();
+  }else{
+    $("#togle").show();
+    $("#togel").hide();
+  }
+  }, 500);
+
+
+</script>
+
+
+  <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const fileInput = document.getElementById('musik');
+        
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const fileURL = URL.createObjectURL(file);
+            audioPlayer.src = fileURL;
+            audioPlayer.style.display = 'block';
+            audioPlayer.play();
+        });
+    </script>
+<br><br>
+
+<script>
+        let player;
+
+        function playAudio() {
+            const youtubeURL = document.getElementById('youtubeURL').value;
+            const videoID = getYoutubeVideoID(youtubeURL);
+            const volume = document.getElementById('volumeRange').value;
+
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: videoID,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': videoID
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.setVolume(document.getElementById('volumeRange').value); // Set volume
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                event.target.playVideo(); // Play the video again when it ends
+            }
+        }
+
+        function getYoutubeVideoID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+
+            if (match && match[2].length == 11) {
+                return match[2];
+            } else {
+                return null;
+            }
+        }
+
+        document.getElementById('volumeRange').addEventListener('input', function() {
+            if (player) {
+                player.setVolume(this.value);
+            }
+        });
+    </script>
+    <script>
+        async function checkSubscriptionStatus() {
+            try {
+                const response = await fetch(`/check-subscription?id=${new URLSearchParams(window.location.search).get('id')}`);
+                const data = await response.json();
+
+                if (!data.isActive) {
+                    alert("Masa aktif akun Anda telah habis. Anda akan dialihkan ke dashboard.");
+                    window.location.href = "/user_dashboard.html?message=expired";
+                }
+            } catch (error) {
+                console.error("Terjadi kesalahan saat memeriksa masa aktif:", error);
+                window.location.href = "/user_login.html";
+            }
+        }
+
+        // Jalankan fungsi pengecekan saat halaman dimuat
+        checkSubscriptionStatus();
+    </script>
+    <script src="https://www.youtube.com/iframe_api"></script>

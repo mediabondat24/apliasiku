@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE | Dashboard v2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/styles/overlayscrollbars.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../app/dist/css/adminlte.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Halaman Admin</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title">DATA USER</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>No Whatsapp</th>
+                                    <th>Akun Tiktok</th>
+                                    <th>Paket</th>
+                                    <th>Status</th>
+                                    <th>Bukti</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-end">
+                            <li class="page-item"> <a class="page-link" href="#">&laquo;</a> </li>
+                            <li class="page-item"> <a class="page-link" href="#">1</a> </li>
+                            <li class="page-item"> <a class="page-link" href="#">2</a> </li>
+                            <li class="page-item"> <a class="page-link" href="#">3</a> </li>
+                            <li class="page-item"> <a class="page-link" href="#">&raquo;</a> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2025 <a href="https://livebubble.online">Live Bubble</a>.</strong> All rights reserved.
+        <div class="float-right d-none d-sm-inline">Anything you want</div>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="../app/dist/js/adminlte.js"></script>
+
+<script>
+    function logout() {
+        fetch('/logout_admin', {
+            method: 'POST',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/admin_login.html';
+            } else {
+                alert('Logout gagal: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat logout.');
+        });
+    }
+
+    function checkAdminSession() {
+        fetch('/check_admin_session', { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.loggedIn) {
+                    window.location.href = '/admin_login.html';
+                } else {
+                    loadUserData();
+                }
+            })
+            .catch(error => {
+                console.error('Error checking session:', error);
+                window.location.href = '/admin_login.html';
+            });
+    }
+
+    function loadUserData() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/users", true);
+    xhr.withCredentials = true;
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            try {
+                const users = JSON.parse(xhr.responseText);
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = '';
+
+                users.forEach((user, index) => {
+                    const akunTiktok = [user.username_tiktok1, user.username_tiktok2, user.username_tiktok3]
+                        .filter(username => username)
+                        .join('<br>');
+
+                    const proofLink = user.proof_path 
+                ? `<a href="#" onclick="viewImage('/uploads/${user.proof_path}')">Lihat Bukti</a>` 
+                : "Bukti Tidak Tersedia";
+
+
+
+                    const tr = document.createElement('tr');
+tr.innerHTML = `
+    <td>${index + 1}</td>
+    <td>${user.name}</td>
+    <td>${user.phone_number}</td>
+    <td>${akunTiktok || '-'}</td>
+    <td>${user.package_type || '-'}</td>
+    <td>${user.status || '-'}</td>
+    <td>${proofLink}</td>
+    <td>
+        <button 
+            class="btn ${user.status === 'Aktif' ? 'btn-danger' : 'btn-success'} btn-sm"
+            onclick="toggleUserStatus(${user.id}, '${user.status}')"
+        >
+            ${user.status === 'Aktif' ? 'Offkan' : 'Aktifkan'}
+        </button>
+        <button 
+            class="btn btn-warning btn-sm"
+            onclick="editUser(${user.id})"
+        >
+            Edit
+        </button>
+        <button 
+            class="btn btn-danger btn-sm"
+            onclick="deleteUser(${user.id}, '${user.status}')"
+            title="Hapus"
+        >
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+`;
+
+
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Response is not valid JSON:', xhr.responseText);
+                alert('Session expired or invalid response. Please log in again.');
+                window.location.href = '/admin_login.html';
+            }
+        } else {
+            console.error('Gagal memuat data pengguna:', xhr.statusText);
+            alert('Gagal memuat data pengguna.');
+        }
+    };
+
+    xhr.onerror = function () {
+        console.error('Request error');
+        alert('Gagal memuat data pengguna.');
+    };
+
+    xhr.send();
+}
+
+// Fungsi untuk menangani klik tombol Edit
+function editUser(userId) {
+    // Simpan ID user yang sedang diedit di input hidden
+    document.getElementById('editUserId').value = userId;
+
+    // Ambil data user berdasarkan userId dan isi form modal
+    fetch(`/api/users/${userId}`)
+        .then(response => response.json())
+        .then(user => {
+            // Isi form modal dengan data user
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editUserPhone').value = user.phone_number;
+            document.getElementById('editUserTiktok1').value = user.username_tiktok1 || '';
+            document.getElementById('editUserTiktok2').value = user.username_tiktok2 || '';
+            document.getElementById('editUserTiktok3').value = user.username_tiktok3 || '';
+            document.getElementById('editUserPackage').value = user.package_type || '';
+            document.getElementById('editUserStatus').value = user.status || 'Tidak Aktif';
+
+            // Tampilkan modal
+            const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            editModal.show();
+        })
+        .catch(error => {
+            console.error('Gagal memuat data pengguna:', error);
+            alert('Gagal memuat data pengguna.');
+        });
+}
+
+function saveUserChanges() {
+    const userId = document.getElementById('editUserId').value;
+    const updatedUser = {
+        name: document.getElementById('editUserName').value,
+        phone_number: document.getElementById('editUserPhone').value,
+        username_tiktok1: document.getElementById('editUserTiktok1').value,
+        username_tiktok2: document.getElementById('editUserTiktok2').value,
+        username_tiktok3: document.getElementById('editUserTiktok3').value,
+        package_type: document.getElementById('editUserPackage').value,
+        status: document.getElementById('editUserStatus').value
+    };
+
+    fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedUser)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Data pengguna berhasil diperbarui');
+            // Tutup modal dan refresh data tabel
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+            editModal.hide();
+            loadUserData();
+        } else {
+            alert('Gagal memperbarui data pengguna');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memperbarui data pengguna.');
+    });
+}
+
+
+
+    function toggleUserStatus(userId, currentStatus) {
+        const newStatus = currentStatus === 'Aktif' ? 'Tidak Aktif' : 'Aktif';
+
+        fetch(`/api/users/${userId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus }),
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadUserData();
+            } else {
+                alert('Gagal mengubah status pengguna.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengubah status.');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAdminSession);
+
+    function deleteUser(userId, status) {
+    if (status !== 'Tidak Aktif') {
+        alert('Pengguna dengan status "Aktif" tidak dapat dihapus. Silakan nonaktifkan terlebih dahulu.');
+        return;
+    }
+
+    if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+        fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Pengguna berhasil dihapus.');
+                loadUserData();
+            } else {
+                alert('Gagal menghapus pengguna.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus pengguna.');
+        });
+    }
+}
+
+</script>
+<!-- Modal Edit User -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Edit Data Pengguna</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm">
+          <input type="hidden" id="editUserId">
+          <div class="mb-3">
+            <label for="editUserName" class="form-label">Nama</label>
+            <input type="text" class="form-control" id="editUserName" required>
+          </div>
+          <div class="mb-3">
+            <label for="editUserPhone" class="form-label">No Whatsapp</label>
+            <input type="text" class="form-control" id="editUserPhone" required>
+          </div>
+          <div class="mb-3">
+            <label for="editUserTiktok1" class="form-label">Akun Tiktok 1</label>
+            <input type="text" class="form-control" id="editUserTiktok1">
+          </div>
+          <div class="mb-3">
+            <label for="editUserTiktok2" class="form-label">Akun Tiktok 2</label>
+            <input type="text" class="form-control" id="editUserTiktok2">
+          </div>
+          <div class="mb-3">
+            <label for="editUserTiktok3" class="form-label">Akun Tiktok 3</label>
+            <input type="text" class="form-control" id="editUserTiktok3">
+          </div>
+          <div class="mb-3">
+            <label for="editUserPackage" class="form-label">Paket</label>
+            <input type="text" class="form-control" id="editUserPackage">
+          </div>
+          <div class="mb-3">
+            <label for="editUserStatus" class="form-label">Status</label>
+            <select id="editUserStatus" class="form-control">
+              <option value="Aktif">Aktif</option>
+              <option value="Tidak Aktif">Tidak Aktif</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="saveUserChanges()">Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal untuk melihat gambar -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Bukti Pembayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="modalImage" src="" alt="Bukti Pembayaran" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fungsi untuk menampilkan gambar di modal
+  function viewImage(imagePath) {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = imagePath;
+    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    imageModal.show();
+  }
+</script>
+
+</body>
+</html>

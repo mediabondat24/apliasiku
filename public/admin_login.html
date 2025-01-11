@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Admin</title>
+    <link rel="stylesheet" href="../app/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <b>Admin</b> Login
+    </div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <form id="adminLoginForm" method="POST">
+                <div class="input-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("adminLoginForm").onsubmit = function (e) {
+    e.preventDefault();
+    const formData = new URLSearchParams(new FormData(this));
+    fetch('/admin_login', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/admin_dashboard.html';
+        } else {
+            alert('Login gagal: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+};
+
+</script>
+</body>
+</html>
