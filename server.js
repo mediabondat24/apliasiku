@@ -32,9 +32,9 @@ app.use(session({
 // Koneksi ke database
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'user_registration'
+    user: 'Mediabondat2486',
+    password: 'Banyuwangi2025@',
+    database: 'bubblefoto'
 });
 
 db.connect(err => {
