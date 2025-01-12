@@ -10,7 +10,51 @@
 
     gtag('config', 'G-3CM2JCDYNF');
   </script>
+  <script>
+        // Fungsi untuk mengisi input otomatis
+        window.onload = function() {
+            document.getElementById('uniqueIdInput').value = 'bubblefoto';
+        };
+    </script>
+    <style>
+        .img-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: blink-color-animation 0.3s infinite;
+        }
+
+        @keyframes blink-color-animation {
+            0% {
+                opacity: 1;
+                filter: hue-rotate(0deg);
+            }
+            50% {
+                opacity: 0;
+                filter: hue-rotate(180deg);
+            }
+            100% {
+                opacity: 1;
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        .fullscreenBG {
+        backgroundSize :cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            z-index: -2;
+        }
+    </style>
 <style>
+.blurred {
+            filter: blur(5px);
+            transition: filter 0.3s ease;
+        }
    #petunjuk {
             position: absolute;
             top: 50%;
@@ -29,6 +73,11 @@
           color: #9e072a;
         }
 </style>
+<script>
+        function toggleBlur(image) {
+            image.classList.toggle('blurred');
+        }
+    </script>
 
 <style>
     
@@ -43,13 +92,425 @@
       position: relative;
     }
 
+    
+
     .photo {
       position: absolute;
       border-radius: 20px;
       transition: transform 5s ease-in-out, opacity 2s ease-in-out; /* Sesuaikan durasi transisi sesuai kebutuhan */
     }
   </style>
+  <style>
 
+        body {
+            margin: 0;
+            background: transparent;
+            position: relative;
+            height: 100vh;
+        }
+
+        .rocket {
+            position: absolute;
+            width: 8vmin;
+            height: 8vmin;
+            border-radius: 50%;
+            background-size: cover;
+            bottom: -10vmin;
+            left: 50%;
+            animation: rocketAppear 0.5s ease-in-out forwards, rocketLaunch var(--rocket-launch-duration) ease-in-out forwards;
+        }
+
+        .rocket::before {
+            content: '';
+            position: absolute;
+            width: 2vmin;
+            height: 10vmin;
+            background: linear-gradient(to bottom, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0));
+            bottom: -10vmin;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: fireTail 0.1s infinite, fireTailHide 0.8s ease-out forwards calc(var(--rocket-launch-duration) - 0.5s);
+        }
+
+        @keyframes rocketAppear {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fireTail {
+            0% {
+                background: linear-gradient(to bottom, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0));
+            }
+
+            50% {
+                background: linear-gradient(to bottom, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0), rgba(255, 69, 0, 0));
+            }
+
+            100% {
+                background: linear-gradient(to bottom, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0));
+            }
+        }
+
+        @keyframes fireTailHide {
+            0% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .username {
+            font-family: "Edu AU VIC WA NT Dots", cursive;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            min-width: 80vmin;
+            text-align: center;
+            background-color: transparent;
+            min-height: 20vmin;
+
+            margin-left: -39vmin;
+            margin-bottom: -8vmin;
+            vertical-align: middle;
+            line-height: 20vmin;
+            animation: usernameGlow 1s ease-in-out infinite alternate, usernameZoom 2s ease-in-out forwards, usernameHide 3s ease-in-out forwards 3s;
+        }
+
+        @keyframes usernameGlow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px rgb(252, 168, 51), 0 0 10px rgb(252, 168, 51), 0 0 50px rgb(252, 168, 51), 0 0 10px rgb(252, 168, 51), 0 0 10px rgb(252, 168, 51);
+                transform: scale(0.5);
+            }
+
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 10px rgb(255, 217, 0), 0 0 10px rgb(255, 217, 0), 0 0 10px rgb(255, 217, 0), 0 0 10px rgb(255, 217, 0), 0 0 10px rgb(255, 217, 0), 0 0 10px rgb(255, 217, 0);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes usernameZoom {
+            from {
+                transform: scale(0.01) rotate(0deg);
+            }
+
+            to {
+                transform: scale(1) rotate(var(--username-rotate));
+            }
+        }
+
+        @keyframes usernameHide {
+            from {
+                opacity: 1;
+                transform: translateY(0vmin) rotate(var(--username-rotate));
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(3vmin) rotate(calc(var(--username-rotate) + 2deg));
+            }
+        }
+
+        @keyframes rocketLaunch {
+            0% {
+                bottom: 0;
+                transform: translateX(-50%);
+            }
+
+            100% {
+                bottom: var(--rocket-offset-bottom);
+                transform: translateX(calc(-60% + var(--rocket-offset)));
+            }
+        }
+
+        @keyframes rocketExplode {
+            0% {
+                bottom: var(--rocket-offset-bottom);
+                transform: translateX(calc(-60% + var(--rocket-offset))) scale(1);
+            }
+
+            100% {
+                bottom: var(--rocket-offset-bottom);
+                transform: translateX(calc(-60% + var(--rocket-offset))) scale(1.5);
+            }
+        }
+
+        @keyframes rocketHide {
+            0% {
+                bottom: var(--rocket-offset-bottom);
+                transform: translateX(calc(-60% + var(--rocket-offset))) scale(1.5);
+                opacity: 1;
+            }
+
+            100% {
+                bottom: var(--rocket-offset-bottom);
+                transform: translateX(calc(-60% + var(--rocket-offset))) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .explosion {
+            position: absolute;
+            width: 6vmin;
+            height: 6vmin;
+            background-size: cover;
+            animation: explosionEffect 2.5s ease-out forwards;
+        }
+
+        @keyframes explosionEffect {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            30% {
+                transform: translate(calc(var(--x) * 10vmin), calc(var(--y) * 10vmin)) scale(1.5);
+                opacity: 1;
+            }
+
+            60% {
+                transform: translate(calc(var(--x) * 25vmin), calc(var(--y) * 25vmin)) scale(2.8);
+                opacity: 0.8;
+            }
+
+            80% {
+                transform: translate(calc(var(--x) * 35vmin), calc(var(--y) * 35vmin)) scale(3);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translate(calc(var(--x) * 40vmin), calc(var(--y) * 40vmin)) scale(0.8);
+                opacity: 0;
+            }
+        }
+    </style>
+<style>
+  #top-givers {
+    display: flex;
+    flex-direction: column; /* Elemen disusun secara vertikal */
+    align-items: center; /* Semua elemen di tengah */
+    position: absolute;
+    top: 85px; /* Posisi dari atas */
+    width: 100%;
+    z-index: 0;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.subtitle2 {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+  .giver-container {
+    display: flex;
+    justify-content: center; /* Membuat Top 2 dan Top 3 berdampingan */
+    gap: 10px; /* Jarak antara elemen Top 2 dan Top 3 */
+    width: 100%;
+    margin-top: 5px; /* Jarak ke bawah dari Top 1 */
+  }
+
+  .giver {
+    display: flex;
+    flex-direction: column; /* Elemen disusun vertikal (gambar di atas, teks di bawah) */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 10px;
+    border-radius: 10px; /* Membuat sudut melengkung */
+    opacity: 0.9; /* Transparansi keseluruhan */
+  }
+
+  .giver img.profile {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+  }
+
+  .giver .crown {
+    position: absolute;
+    top: -10px; /* Posisi mahkota tepat di atas gambar profil */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 93px;
+  }
+
+  .giver div {
+  margin-top: 2px; /* Mengurangi jarak atas */
+  font-size: 14px;
+  line-height: 1; /* Mengatur jarak antar baris teks */
+  text-align: center;
+}
+
+  .top-1 {
+    background: rgba(255, 215, 0, 0.5); /* Warna emas transparan */
+  }
+
+  .top-2 {
+    background: rgba(192, 192, 192, 0.5); /* Warna perak transparan */
+  }
+
+  .top-3 {
+    background: rgba(205, 127, 50, 0.5); /* Warna perunggu transparan */
+  }
+
+  .top-4 {
+    background: rgba(135, 206, 250, 0.5); /* Warna biru langit transparan */
+    margin-top: 5px; /* Jarak ke bawah dari Top 2 dan Top 3 */
+  }
+
+
+/* Gaya untuk setiap pemberi hadiah di Top 2-6 */
+/* Kontainer untuk daftar Top 2-6 */
+.top-row {
+    display: flex;
+    flex-wrap: wrap; /* Mengizinkan elemen berlanjut ke baris berikutnya */
+    gap: 2px; /* Jarak antar elemen lebih rapat */
+    padding: 2px; /* Spasi dalam elemen lebih kecil */
+    margin-top: 2px; /* Jarak antara Top 1-3 dengan daftar Top 2-6 */
+    align-items: center; /* Pusatkan konten secara vertikal */
+    justify-content: center; /* Pusatkan konten secara horizontal */
+    width: 100%;
+}
+
+/* Gaya untuk setiap pemberi hadiah di Top 2-6 */
+.giver-row {
+    display: flex;
+    align-items: center; /* Posisikan gambar dan teks sejajar secara vertikal */
+    gap: 5px; /* Jarak antara gambar dan teks lebih rapat */
+    padding: 2px 5px; /* Spasi dalam elemen */
+    border-radius: 5px; /* Membuat sudut melengkung */
+    background: rgba(240, 248, 255, 0.5); /* Warna latar */
+    width: auto; /* Sesuaikan lebar dengan konten */
+    justify-content: center; /* Konten berada di tengah secara horizontal */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+}
+
+/* Gaya gambar profil dalam daftar Top 2-6 */
+.giver-row img.profile {
+    border-radius: 50%; /* Gambar menjadi lingkaran */
+    width: 40px; /* Lebar gambar lebih kecil */
+    height: 40px; /* Tinggi gambar lebih kecil */
+}
+
+/* Gaya teks dalam giver-row */
+.giver-row div {
+    display: flex;
+    flex-direction: column; /* Menyusun nama dan poin secara vertikal */
+    align-items: center; /* Posisikan teks di tengah */
+    font-size: 10px; /* Ukuran font lebih kecil */
+    line-height: 1; /* Jarak antar baris teks */
+    font-weight: bold;
+    text-align: center;
+    margin: 0; /* Hilangkan margin pada teks */
+}
+
+/* Warna khusus untuk elemen Top 2-6 berdasarkan urutan */
+.giver-row:nth-child(1) {
+    background: rgba(255, 223, 186, 0.5); /* Warna Top 2 */
+}
+
+.giver-row:nth-child(2) {
+    background: rgba(205, 192, 176, 0.5); /* Warna Top 3 */
+}
+
+.giver-row:nth-child(3) {
+    background: rgba(218, 165, 32, 0.5); /* Warna Top 4 */
+}
+
+.giver-row:nth-child(4) {
+    background: rgba(173, 216, 230, 0.5); /* Warna Top 5 */
+}
+.giver-row:nth-child(4) {
+    background: rgba(178, 163, 166, 0.5); /* Warna Top 5 */
+}
+
+
+
+
+  @keyframes flip-right {
+  0% {
+    transform: perspective(1000px) rotateY(0);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0);
+  }
+}
+
+@keyframes flip-left {
+  0% {
+    transform: perspective(1000px) rotateY(0);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-90deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0);
+  }
+}
+
+.giver.flip-right {
+  animation: flip-right 1s ease-in-out;
+}
+
+.giver.flip-left {
+  animation: flip-left 1s ease-in-out;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+<style>
+        /* Menambahkan CSS untuk menampilkan gambar GIF di atas elemen lain */
+        #gifImage {
+            width: 400px;
+            height: 600px;
+            display: none;
+            position: absolute; /* Posisi harus selain 'static' */
+            top: 50%;  /* Menyelaraskan GIF secara vertikal */
+            left: 50%; /* Menyelaraskan GIF secara horizontal */
+            transform: translate(-50%, -50%); /* Menyelaraskan gambar secara tepat di tengah */
+            z-index: 10000; /* Memastikan gambar muncul di atas elemen lain */
+        }
+    </style>
  
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -133,6 +594,9 @@
   <div id="petunjuk">
     <h3>OKE KEREN!! TOMBOL PENGATURAN ADA DIBAWAH</h3>
 </div>
+  <div id="top-givers"></div>
+  <img id="gifImage" src="" alt="GIF" />
+  <div id="imagePreload" style="display: none; position: absolute;"></div>
     <div id="animation-container">
         <!-- Animasi foto akan ditampilkan di sini -->
          
@@ -143,32 +607,9 @@
     <br><br>
 </center>
    
-   
-    
-
-
       <div class="card-body">
  </div>
 
-        
-
-
-
-
-<!-- <div id="button-containers">
-    <button onclick="addPhoto('small')">Tambah Foto Kecil</button>
-    <input type="number" id="smallDuration" placeholder="Durasi Kecil (detik)" />
-    <button onclick="addPhoto('medium')">Tambah Foto Sedang</button>
-    <input type="number" id="mediumDuration" placeholder="Durasi Sedang (detik)" />
-    <button onclick="addPhoto('large')">Tambah Foto Besar</button>
-    <input type="number" id="largeDuration" placeholder="Durasi Besar (detik)" />
-    <button onclick="resizePhoto('small')">Kecilkan Foto</button>
-    <button onclick="resizePhoto('medium')">Normalkan Foto</button>
-    <button onclick="resizePhoto('large')">Perbesar Foto</button>
-    <button onclick="changeSpeed('slow')">Perlahan</button>
-    <button onclick="changeSpeed('fast')">Cepat</button>
-  </div> -->
-   
 
 </body>
  </html>
@@ -446,40 +887,23 @@ console.log("min"+min_coin);
 
 
 
-<!-- <script>
-  var u=1; var poto1=""; var poto2="";
-  function match(poto){
-    if(u==1){
-
-    }
-
-  }
-</script> -->
-
-
-
-
-
-
 <script>
     let photoCount = 0;
     let speed = 5000; // Kecepatan default, diatur dalam milidetik
 
-    function addPhoto(size,img,coint=1) {
+    function addBubble(size,img,coint=1) {
 
 
 
       const photo = document.createElement('img');
       photo.src = img; // Ganti dengan nama foto Anda
       photo.classList.add('photo');
-      
+      // photo.id = `photo-${photoCount}`;
       photo.id = `photo-${photoCount}`;
+      photo.setAttribute('onclick', 'toggleBlur(this)');
       
-      const span = document.createElement('span');
-span.appendChild(photo);
-
 const container = document.getElementById('animation-container');
-container.appendChild(span);
+container.appendChild(photo);
 
       let durationInput;
    
@@ -491,25 +915,28 @@ container.appendChild(span);
         var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
         var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
         photo.style.border = '2px solid ' + randomColor;
-        photo.style.boxShadow = '0 0 30px ' + randomColor;
+
       } else if (size === 'medium') {
         photo.style.width = '120px';
         photo.style.height = '120px';
         durationInput = document.getElementById('mediumDuration');
         photo.style.zIndex = coint;
+        
         var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
         var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
         photo.style.border = '2px solid ' + randomColor;
-        photo.style.boxShadow = '0 0 30px ' + randomColor;
-      } else if (size === 'large') {
+        photo.style.boxShadow = '0 0 5px ' + randomColor;
+      }else if (size === 'large') {
         photo.style.width = '250px';
         photo.style.height = '250px';
         durationInput = document.getElementById('largeDuration');
         photo.style.zIndex = coint+1;
+        
         var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
         var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
         photo.style.border = '2px solid ' + randomColor;
-        photo.style.boxShadow = '0 0 20px ' + randomColor;
+        photo.style.boxShadow = '0 0 5px ' + randomColor;
+
       }else if (size === 'supermedium') {
         photo.style.width = '120px';
         photo.style.height = '120px';
@@ -519,7 +946,7 @@ container.appendChild(span);
        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
         var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
         photo.style.border = '2px solid ' + randomColor;
-        photo.style.boxShadow = '0 0 30px ' + randomColor;
+        photo.style.boxShadow = '0 0 5px ' + randomColor;
       }else if (size === 'supersmall') {
         photo.style.width = '70px';
         photo.style.height = '70px';
@@ -529,9 +956,9 @@ container.appendChild(span);
         var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta','orange','#2F4F4F','#1E90FF','#CD5C5C','#20B2AA','#C71585','#DDA0DD','#9ACD32']; 
         var randomColor = colors[Math.floor(Math.random() * colors.length)]; 
         photo.style.border = '2px solid ' + randomColor;
-        photo.style.boxShadow = '0 0 30px ' + randomColor;
+        photo.style.boxShadow = '0 0 5px ' + randomColor;
       }
-
+      
       const fadeoutDuration = durationInput ? parseInt(durationInput.value) * 1000 : 120000; // default 2 menit
 
       movePhoto(photo.id, fadeoutDuration);
@@ -540,9 +967,6 @@ container.appendChild(span);
     }
     
     
-    
-    
-
     function movePhoto(photoId, fadeoutDuration) {
       const photo = document.getElementById(photoId);
       if(photo===null){
@@ -565,6 +989,7 @@ container.appendChild(span);
       }, speed); // Menggerakkan foto sesuai kecepatan yang diatur
     }
 
+
     function resizePhoto(size) {
       const photos = document.querySelectorAll('.photo');
       photos.forEach(photo => {
@@ -578,6 +1003,9 @@ container.appendChild(span);
           photo.style.width = '150px';
           photo.style.height = '150px';
         } else if (size === 'large') {
+          photo.style.width = `${Math.min(currentWidth + 20, 300)}px`;
+          photo.style.height = `${Math.min(currentHeight + 20, 300)}px`;
+        } else if (size === 'fulllarge') {
           photo.style.width = `${Math.min(currentWidth + 20, 300)}px`;
           photo.style.height = `${Math.min(currentHeight + 20, 300)}px`;
         }
@@ -602,15 +1030,12 @@ container.appendChild(span);
       }
     }
 
-    // Otomatis tambahkan satu foto kecil saat halaman dimuat
-    // addPhoto('small');
-
-
+    
     function openmodal(){
-    $("#addPhotoModal").modal("show");
+    $("#addBubbleModal").modal("show");
  }
     function tutup(){
-    $("#addPhotoModal").modal("hide");
+    $("#addBubbleModal").modal("hide");
  }
   </script>
 
@@ -680,65 +1105,40 @@ container.appendChild(span);
     <hr>
   </tr>
   <tr>
+    <td colspan="2"> 
+         
+        <div class="form-check">
+  <input name="klapklip" checked class="form-check-input" type="checkbox" id="klapklipid">
+  <label class="form-check-label" for="klapklip">
+      Aktifkan background kelap-kelip 
+  </label><br/>
+   <i style='font-size:10px;color:green;margin-top:-5px;position:absolute'>Foto pemberi gift diatas 20 koin menjadi background</i>
+</div>
+ 
+    </td>
+</tr>
+  <tr>
     <td colspan="2">
         <hr>
         <b>DURASI MUNCUL PHOTO </b>
         <div style="padding:5px">
             <label class="form-check-label" for="gift">
-                Photo kecil  <input type="number"   style="max-width: 70px;" id="smallDuration" value="30">   Detik
+                Photo kecil  <input type="number"   style="max-width: 70px;" id="smallDuration" value="40">   Detik
             </label>
         </div>
         <div style="padding:5px">
             <label class="form-check-label" for="gift">
-               Photo sedang  <input type="number"   style="max-width: 70px;"  id="mediumDuration" value="50">   Detik
+               Photo sedang  <input type="number"   style="max-width: 70px;"  id="mediumDuration" value="35">   Detik
             </label>
         </div>
         <div style="padding:5px">
             <label class="form-check-label" for="gift">
-                Photo besar  <input type="number"   style="max-width: 70px;" id="largeDuration" value="60">   Detik
+                Photo besar  <input type="number"   style="max-width: 70px;" id="largeDuration" value="30">   Detik
             </label>
         </div>
 
       <hr>
-      <!-- <b>OPSI MUNCUL FHOTO</b>  
-   
-      <div class="form-check">
-        <input name="gift" checked class="form-check-input" type="checkbox" id="gift">
-        <label class="form-check-label" for="gift">
-            GIFT   <input type="hidden" size="10" id="min_coin" style="max-width: 70px;" name="min_coin" value="1" placeholder="minimal koin untuk muncul foto">
-        </label>
-    </div>
-    <div class="form-check">
-      <input name="follow" checked class="form-check-input" type="checkbox" id="follow">
-      <label class="form-check-label" for="follow">
-          FOLLOW
-      </label>
-  </div>
-  <div class="form-check">
-    <input name="share" class="form-check-input" type="checkbox" id="share">
-    <label class="form-check-label" for="share">
-        SHARE
-    </label>
-</div>
-  <div class="form-check">
-      <input name="join" class="form-check-input" type="checkbox" id="join">
-      <label class="form-check-label" for="join">
-          JOIN
-      </label>
-  </div>
-  <div class="form-check">
-    <input name="like" class="form-check-input" type="checkbox" id="like">
-    <label class="form-check-label" for="like">
-        LIKE
-    </label>
-</div> -->
-
-<!-- <div class="form-check">
-  <input name="key" class="form-check-input" type="checkbox" id="key">
-  <label class="form-check-label" for="key">
-      KOMENTAR <input type="text" id="komentar" name="komentar" value="keren" placeholder="kosongkan = semua koment muncul foto">
-  </label>
-</div> -->
+      
 <table>
   <tr>
     <td><b>KECEPATAN PERGERAKAN PHOTO</b></td>
@@ -758,7 +1158,7 @@ container.appendChild(span);
  <b>AKTIKAN SUARA GOOGLE</b><br>
  <i class="text-danger">Mohon maaf untuk suara masih belum stabil, masih kami sempurnakan</i>
 <div class="form-check">
-  <input name="vkomen" checked class="form-check-input" type="checkbox" id="vkomen">
+  <input name="vkomen" class="form-check-input" type="checkbox" id="vkomen">
   <label class="form-check-label" for="vkomen">
       KOMENTAR DIBACA GOOGLE
   </label>
@@ -770,7 +1170,6 @@ container.appendChild(span);
       UCAPAN SELAMAT DATANG UNTUK YANG JOIN
   </label>
 </div>
-
 
 <div class="form-check">
   <input name="vgift" checked class="form-check-input" type="checkbox" id="vgift">
@@ -807,39 +1206,11 @@ Background
 <div id="gradient-box" style="width:100%;height:50px"></div>
 <button class="btn btn-block btn-mini btn-primary" onclick="gra()">Pilih Warna latar belakang</button>
 <br><br>
-  <!-- Radio button untuk mengatur tata letak latar belakang -->
-  <!-- <div class="form-check">
-    <input class="form-check-input" type="radio" name="backgroundLayout" id="coverLayout" value="cover" checked>
-    <label class="form-check-label" for="coverLayout">
-      Cover
-    </label>
-  </div>
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="backgroundLayout" id="repeatLayout" value="repeat">
-    <label class="form-check-label" for="repeatLayout">
-      Repeat
-    </label>
-  </div> -->
-
+ 
     </td> 
   </tr>
 
-  <!-- <tr>
-    <td colspan="2">
-      <hr>
-      <b>TEKS BAWAH FOTO</b><br>
-      <textarea class="form-control" style="min-width:350px;border:black solid 1px;height:150px" onkeyup="ubah_teks(this.value)">Jangan D! G! Ft
-nanti fotomu muncul</textarea>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-    </td>
-  </tr> -->
+  
   <tr>
     <td colspan="2">
    <div id="roomStats" style="color:black;"></div>
@@ -853,17 +1224,12 @@ nanti fotomu muncul</textarea>
 </table>
 </div>
 </div>
-
-
-
-            
+    
         </div>
        
       </div>
     </div>
   </div>
-
-
 
 <script>
    function getRandomColor() {
@@ -893,26 +1259,26 @@ nanti fotomu muncul</textarea>
             document.body.style.background = `linear-gradient(${direction}, ${startColor}, ${endColor})`;
     
   }
-     // Fungsi untuk mengatur tata letak latar belakang
-    //  document.querySelector('input[name="backgroundLayout"]').addEventListener('change', function() {
-    //   const selectedLayout = document.querySelector('input[name="backgroundLayout"]:checked').value;
-    //   document.body.style.backgroundSize = selectedLayout;
-    //   document.body.style.backgroundRepeat = selectedLayout === 'cover' ? 'no-repeat' : 'repeat';
-    // });
+   
     
-    function changeBackground(event) {
-      const fileInput = event.target;
-      const file = fileInput.files[0];
-      
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.body.style.backgroundImage = `url('${e.target.result}')`;
-          document.body.style.backgroundSize="cover";
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+   // Function to change the background when an image file is selected
+function changeBackground(event) {
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+  
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.body.style.backgroundImage = `url('${e.target.result}')`;
+      document.body.style.backgroundSize = "cover";
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Set initial background image from 'images/background.png' in public folder
+document.body.style.backgroundImage = "url('images/background.png')";
+document.body.style.backgroundSize = "cover";
 
   
 
@@ -984,73 +1350,10 @@ function hapusAngkaDanSimbol(string) {
             populateVoiceList();
         };
 
-        // Inisialisasi daftar suara saat halaman dimuat
+        
         populateVoiceList();
         
-        
-/*function aktifSuaraKomen(text) {
-    
-       var suara_filter = hapusAngkaDanSimbol(text);
-    let jumlahKarakter = suara_filter.length;
-    if(jumlahKarakter<5){
-       return false;
-   }
-   
-    return new Promise((resolve, reject) => {
-        var utterance = new SpeechSynthesisUtterance();
-        var voices = window.speechSynthesis.getVoices();
-        utterance.lang = 'id-ID'; // 'id-ID' is the language code for Indonesian
-        utterance.voice = voices[11]; //set default google bahasa indonesia
-        utterance.rate = 10 / 10;
-        utterance.pitch = 1;
-        utterance.text = text;
-
-        utterance.onstart = function (event) {
-            isSpeaking = true;
-        };
-        utterance.onend = function (event) {
-            isSpeaking = false;
-        };
-        utterance.onerror = function (event) {
-            isSpeaking = false;
-        };
-
-        window.speechSynthesis.speak(utterance);
-    });
-  }
-  */
-  
-  
-/*function aktifSuaraKomen(suara){
-    
-    
-    
-      var vkomen = document.getElementById("vkomen");
-      if (vkomen.checked) {
-    
-     
-      
-      
-    var suara_filter = hapusAngkaDanSimbol(suara);
-    let jumlahKarakter = suara_filter.length;
-   if(jumlahKarakter<5){
-       return false;
-   }
-         
-       var  voice = "Indonesian Female";
-          
-
-          responsiveVoice.speak(suara_filter, voice, {
-            rate: 0.9,
-            pitch: 1,
-            volume: 3,
-            enableEstimationTimeout:false
-          });
-          
-          
-    }  
-    
-}*/
+ 
 
 function aktifSuara(suaras,jenis){
 
@@ -1161,10 +1464,6 @@ function aktifSuara(suaras,jenis){
   }
 </script>
 
- 
-
-
-
 
 <script>
 function reloadMainPageFromIframe() {
@@ -1174,10 +1473,6 @@ function reloadMainPageFromIframe() {
   }, '*');
 }
 </script>
-
-
-
-<!-- Script JavaScript untuk mengganti elemen select dengan elemen input -->
 
 
 <script>
@@ -1194,8 +1489,6 @@ function reloadMainPageFromIframe() {
       // Menambahkan langkah scroll ke posisi scroll saat ini
       window.scrollBy(0, scrollStep);
 
-       
- 
   }
 
    
@@ -1222,10 +1515,6 @@ function reloadMainPageFromIframe() {
       }
     }, 10);
   }
-
-
-
-
 
   setTimeout(() => {
     if(!modeapp){
@@ -1255,75 +1544,421 @@ function reloadMainPageFromIframe() {
     </script>
 <br><br>
 
-<script>
-        let player;
 
-        function playAudio() {
-            const youtubeURL = document.getElementById('youtubeURL').value;
-            const videoID = getYoutubeVideoID(youtubeURL);
-            const volume = document.getElementById('volumeRange').value;
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-            player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: videoID,
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': videoID
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
+    <script>
+        let rocketsInAirCount = 0;
+
+        function onGift(username, profilePictureUrl, giftImageUrl, overrideEnableAudio) {
+    if (rocketsInAirCount > 10) return;
+    if (settings.firework_maxFireworks && rocketsInAirCount >= settings.firework_maxFireworks) return;
+
+    // Preload images
+    const preLoadImage1 = document.createElement('img');
+    preLoadImage1.src = profilePictureUrl;
+    document.getElementById('imagePreload').appendChild(preLoadImage1);
+
+    const preLoadImage2 = document.createElement('img');
+    preLoadImage2.src = giftImageUrl;
+    document.getElementById('imagePreload').appendChild(preLoadImage2);
+
+    // Create the rocket element
+    const rocket = document.createElement('div');
+    rocket.className = 'rocket';
+    rocket.style.backgroundImage = `url(${profilePictureUrl})`;
+    var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan', 'magenta', 'orange', '#2F4F4F', '#1E90FF', '#CD5C5C', '#20B2AA', '#C71585', '#DDA0DD', '#9ACD32'];
+        var randomColor = colors[Math.floor(Math.random() * colors.length)];
+        rocket.style.border = '2px solid ' + randomColor;
+    // Add z-index for rocket
+    const coint = Math.floor(Math.random() * 10000 + 10000);  // Example: generate random coint value
+    rocket.style.zIndex = coint;
+
+    // Append the rocket to the body
+    const randomOffset = (Math.random() * 40 - 20) + 'vmin';
+    rocket.style.setProperty('--rocket-offset', randomOffset);
+
+    document.body.appendChild(rocket);
+
+    const verticalOffset = Math.floor(Math.random() * (75 - 60 + 1) + 60);
+    rocket.style.setProperty('--rocket-offset-bottom', (verticalOffset - 2) + "vh");
+
+    // Random duration between 2 and 3 seconds
+    rocket.style.setProperty('--rocket-launch-duration', (Math.random() * 1 + 2) + 's');
+
+    // Audio setup for rocket
+    const audioRocketStart = new Audio('sounds/firework/rocket_start/rocket_start.mp3');
+            audioRocketStart.volume = (settings.firework_soundVolume || 80) / 100 * 0.4;
+
+            audioRocketStart.volume = ((settings.firework_soundVolume || 80) / 100) * 0.4;
+
+            const audioRocketBoom = new Audio('sounds/firework/rocket_boom/rocket_boom.mp3');
+audioRocketBoom.volume = (settings.firework_soundVolume || 80) / 100;
+
+            audioRocketBoom.volume = (settings.firework_soundVolume || 80) / 100;
+
+    // Play rocket launch sound
+    if (overrideEnableAudio || (!location.href.includes("preview=1") && settings.firework_soundEnabled !== false)) {
+        setTimeout(() => {
+            audioRocketStart.play();
+        }, 300);
+    }
+
+    rocketsInAirCount += 1;
+
+    // Trigger explosion animation when rocket reaches the top
+    rocket.addEventListener('animationend', (e) => {
+        if (e.animationName === 'rocketLaunch') {
+            rocket.style.animation = 'rocketExplode 0.2s ease-out forwards';
+        }
+
+        if (e.animationName === 'rocketExplode') {
+            rocket.style.animation = 'rocketHide 1s ease-out forwards';
+
+            // Create multiple explosion elements (three rings)
+            // First ring (only profile pictures)
+            for (let i = 0; i < 10; i++) {
+                const explosion = document.createElement('div');
+                explosion.className = 'explosion';
+                explosion.style.borderRadius = '50%';
+                explosion.style.backgroundImage = `url(${profilePictureUrl})`;
+                explosion.style.setProperty('--x', Math.cos((i / 10) * 2 * Math.PI));
+                explosion.style.setProperty('--y', Math.sin((i / 10) * 2 * Math.PI));
+                explosion.style.transform = `translate(calc(var(--x) * ${20 + i * 5}vmin), calc(var(--y) * ${20 + i * 5}vmin))`;
+                explosion.style.left = `calc(50% + ${randomOffset} - 4vmin)`;
+                explosion.style.bottom = verticalOffset + 'vh';
+                
+                // Add z-index for explosion
+                explosion.style.zIndex = coint + 1;
+
+                document.body.appendChild(explosion);
+
+                // Remove explosion after animation ends
+                explosion.addEventListener('animationend', () => {
+                    document.body.removeChild(explosion);
+                });
+            }
+
+            // Username color and positioning
+            let possibleColors = ['#ffcc00', '#ff9d00', '#ff4d00', '#88ff00', '#00ccff', '#ff00b3'];
+            const textLabel = document.createElement('div');
+
+            if (settings.firework_showUsername !== false) {
+                textLabel.style.setProperty('--username-rotate', Math.floor(Math.random() * 20 - 10) + 'deg');
+                textLabel.innerText = username;
+                textLabel.style.position = 'absolute';
+                textLabel.style.left = `calc(50% + ${randomOffset} - 4vmin)`;
+                textLabel.style.bottom = verticalOffset + 'vh';
+                textLabel.style.color = possibleColors[Math.floor(Math.random() * possibleColors.length)];
+
+                // Add z-index for textLabel (username)
+                textLabel.style.zIndex = coint + 2;
+            }
+
+            if (username.length > 30) textLabel.style['font-size'] = '3vmin';
+            else if (username.length > 15) textLabel.style['font-size'] = '5vmin';
+            else if (username.length > 12) textLabel.style['font-size'] = '7vmin';
+            else if (username.length > 8) textLabel.style['font-size'] = '9vmin';
+            else if (username.length > 5) textLabel.style['font-size'] = '13vmin';
+            else if (username.length > 3) textLabel.style['font-size'] = '15vmin';
+            else textLabel.style['font-size'] = '18vmin';
+
+            textLabel.classList.add('username');
+            document.body.appendChild(textLabel);
+
+            // Second ring (mixed profile pictures and gifts)
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    const explosion = document.createElement('div');
+                    explosion.className = 'explosion';
+                    explosion.style.borderRadius = '50%';
+                    explosion.style.backgroundImage = i % 2 === 0 ? `url(${profilePictureUrl})` : `url(${giftImageUrl})`;
+                    explosion.style.setProperty('--x', Math.cos((i / 10) * 2 * Math.PI));
+                    explosion.style.setProperty('--y', Math.sin((i / 10) * 2 * Math.PI));
+                    explosion.style.transform = `translate(calc(var(--x) * ${20 + i * 5}vmin), calc(var(--y) * ${20 + i * 5}vmin))`;
+                    explosion.style.left = `calc(50% + ${randomOffset} - 4vmin)`;
+                    explosion.style.bottom = verticalOffset + 'vh';
+
+                    // Add z-index for second explosion ring
+                    explosion.style.zIndex = coint + 3;
+
+                    document.body.appendChild(explosion);
+
+                    // Remove explosion after animation ends
+                    explosion.addEventListener('animationend', () => {
+                        document.body.removeChild(explosion);
+                    });
                 }
-            });
-        }
+            }, 400);
 
-        function onPlayerReady(event) {
-            event.target.setVolume(document.getElementById('volumeRange').value); // Set volume
-        }
+            // Third ring (only gifts)
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    const explosion = document.createElement('div');
+                    explosion.className = 'explosion';
+                    explosion.style.borderRadius = '50%';
+                    explosion.style.backgroundImage = `url(${giftImageUrl})`;
+                    explosion.style.setProperty('--x', Math.cos((i / 10) * 2 * Math.PI));
+                    explosion.style.setProperty('--y', Math.sin((i / 10) * 2 * Math.PI));
+                    explosion.style.transform = `translate(calc(var(--x) * ${25 + i * 5}vmin), calc(var(--y) * ${25 + i * 5}vmin))`;
+                    explosion.style.left = `calc(50% + ${randomOffset} - 4vmin)`;
+                    explosion.style.bottom = verticalOffset + 'vh';
 
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.ENDED) {
-                event.target.playVideo(); // Play the video again when it ends
+                    // Add z-index for third explosion ring
+                    explosion.style.zIndex = coint + 4;
+
+                    document.body.appendChild(explosion);
+
+                    // Remove explosion after animation ends
+                    explosion.addEventListener('animationend', () => {
+                        document.body.removeChild(explosion);
+                    });
+                }
+            }, 800);
+
+            setTimeout(() => {
+                document.body.removeChild(rocket);
+                document.body.removeChild(textLabel);
+                preLoadImage1.remove();
+                preLoadImage2.remove();
+            }, 8000);
+
+            setTimeout(() => {
+                rocketsInAirCount += -1;
+                console.log("rockets in air count", rocketsInAirCount);
+            }, 2000);
+
+            if (overrideEnableAudio || (!location.href.includes("preview=1") && settings.firework_soundEnabled !== false)) {
+                setTimeout(() => {
+                    audioRocketBoom.play();
+                }, 200);
             }
         }
+    });
+}
 
-        function getYoutubeVideoID(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-
-            if (match && match[2].length == 11) {
-                return match[2];
-            } else {
-                return null;
-            }
-        }
-
-        document.getElementById('volumeRange').addEventListener('input', function() {
-            if (player) {
-                player.setVolume(this.value);
-            }
-        });
+        
     </script>
     <script>
-        async function checkSubscriptionStatus() {
-            try {
-                const response = await fetch(`/check-subscription?id=${new URLSearchParams(window.location.search).get('id')}`);
-                const data = await response.json();
+var sebelumnya = 0;
+    function bgklip(link,diamon) {
+   
+          var kk = document.getElementById("klapklipid");
+      if (!kk.checked) {
+        return false;
+      }
+      
+        if(diamon>=sebelumnya){
+        sebelumnya=diamon;
+                    const existingImage = document.getElementById('imageContainer');
+                    if (existingImage) {
+                        existingImage.remove();
+                    }
 
-                if (!data.isActive) {
-                    alert("Masa aktif akun Anda telah habis. Anda akan dialihkan ke dashboard.");
-                    window.location.href = "/user_dashboard.html?message=expired";
-                }
-            } catch (error) {
-                console.error("Terjadi kesalahan saat memeriksa masa aktif:", error);
-                window.location.href = "/user_login.html";
-            }
+        }else{
+              const existingImage = document.getElementById('imageContainer');
+                    if (existingImage) {
+                        return false;
+                    }
+             sebelumnya=diamon;
         }
 
-        // Jalankan fungsi pengecekan saat halaman dimuat
-        checkSubscriptionStatus();
+        if(diamon<=20){
+            var detik = 500;
+        }else if(diamon<=30){
+            var detik = 8000;
+        }else if(diamon<=50){
+            var detik = 15000;
+        }else if(diamon<=100){
+            var detik = 20000;
+        }else if(diamon<=200){
+            var detik = 25000;
+        }else{
+            var detik = 35000;
+        }
+
+     
+        const imageContainer = document.createElement('div');
+        imageContainer.id = 'imageContainer';
+        imageContainer.className = 'image-container-bg';
+
+        const img = document.createElement('img');
+        img.classList.add('img-bg');
+        img.src = link;
+        img.alt = 'Contoh Gambar';
+
+        imageContainer.appendChild(img);
+        document.body.appendChild(imageContainer);
+
+        imageContainer.classList.add('fullscreenBG');
+
+        setTimeout(() => {
+            if (imageContainer.parentNode) {
+                imageContainer.remove();
+            }
+        }, detik); // Menghapus gambar setelah 15 detik
+    }
+</script>
+
+<script>
+        // Menetapkan file musik yang sudah ada di folder /public/music/
+        const audioElements = [
+            new Audio('/music/meledak.mp3'),  // Musik untuk Gift kecil
+            new Audio('/music/tangtingtung.mp3'), // Musik untuk Gift sedang
+            new Audio('/music/ani.mp3'),  // Musik untuk Gift besar
+            new Audio('/music/apaantuh.mp3'),  // Musik untuk Gift super besar
+            new Audio('/music/sadbor.mp3')  // Musik untuk Gift super besar
+        ];
+
+        // Menetapkan gambar GIF yang sesuai dengan audio
+        const imageElements = [
+            '/images/mawar.gif',       // GIF untuk Gift kecil
+            '/images/rosa.gif',      // GIF untuk Gift sedang
+            '/images/donat.gif',       // GIF untuk Gift besar
+            '/images/seratus.gif',  // GIF untuk Gift super besar
+            '/images/seratus.gif'       // GIF untuk Gift sadbor
+        ];
+
+        // Fungsi untuk memulai audio dan menampilkan gambar GIF
+       function eplayAudio(index) {
+            // Memulai audio sesuai dengan index yang dipilih
+            audioElements[index].play();
+
+            // Menampilkan gambar GIF yang sesuai dengan index yang dipilih
+            const gifImage = document.getElementById('gifImage');
+            gifImage.src = imageElements[index];  // Menetapkan path gambar GIF
+            gifImage.style.display = 'block';  // Menampilkan gambar GIF
+
+            // Menyembunyikan gambar GIF setelah durasi musik selesai
+            setTimeout(() => {
+                gifImage.style.display = 'none';  // Menyembunyikan gambar setelah musik selesai
+            }, audioElements[index].duration * 1500);  // Durasi dalam milidetik
+        }
+
+        // Fungsi untuk menghentikan audio yang diputar
+        function estopAudio(index) {
+            audioElements[index].pause();
+            audioElements[index].currentTime = 0;
+        }
+
+        // Fungsi untuk menghentikan semua audio dan menyembunyikan gambar GIF
+        function stopAllAudio() {
+            audioElements.forEach((audio, index) => {
+                estopAudio(index);
+            });
+
+            // Menyembunyikan gambar GIF setelah audio berhenti
+            const gifImage = document.getElementById('gifImage');
+            gifImage.style.display = 'none';  // Menyembunyikan gambar GIF
+        }
     </script>
-    <script src="https://www.youtube.com/iframe_api"></script>
+<script>
+function setRandomBorder(photo) {
+  const colors = [
+    'red', 'green', 'blue', 'yellow', 'orange', 'purple', 
+    'cyan', 'magenta', '#2F4F4F', '#1E90FF', '#CD5C5C', 
+    '#20B2AA', '#C71585', '#DDA0DD', '#9ACD32'
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  photo.style.border = `3px solid ${randomColor}`;
+  photo.style.boxShadow = `0 0 3px ${randomColor}`;
+}
+</script>
+<script>
+function setRandomBordernew(photo) {
+  const colors = [
+    'red', 'green', 'blue', 'yellow', 'orange', 'purple', 
+    'cyan', 'magenta', '#2F4F4F', '#1E90FF', '#CD5C5C', 
+    '#20B2AA', '#C71585', '#DDA0DD', '#9ACD32'
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  photo.style.border = `2px solid ${randomColor}`;
+  photo.style.boxShadow = `0 0 2px ${randomColor}`;
+}
+</script>
+   <script>
+  async function fetchTopGivers() {
+    try {
+        // Sort Top 1-3 dari client-side data
+        const top3 = Object.values(topGivers)
+            .sort((a, b) => b.total_diamonds - a.total_diamonds)
+            .slice(0, 3);
+
+        // Render hanya Top 1-3
+        renderTopGivers(top3);
+    } catch (error) {
+        console.error('Error fetching top givers:', error);
+    }
+}
+
+function renderTopGivers(top3) {
+    const container = document.getElementById('top-givers');
+    container.innerHTML = ''; // Hapus konten sebelumnya
+
+    // Judul
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'title';
+    titleDiv.textContent = 'TOP LIVE TIME';
+    container.appendChild(titleDiv);
+
+    // Container untuk Top 1
+    const top1Container = document.createElement('div');
+    top1Container.className = 'giver top-1';
+
+    if (top3[0]) {
+        top1Container.innerHTML = `
+          <img src="${top3[0].profilePictureUrl}" class="profile" alt="Profile Picture" onerror="this.src='/default-avatar.png';">
+          <div>
+            <strong>TOP 1</strong><br>
+            <strong>${top3[0].nickname}</strong><br>
+            <span>${top3[0].total_diamonds} POIN</span>
+          </div>
+        `;
+        container.appendChild(top1Container);
+        setRandomBorder(top1Container.querySelector('.profile'));
+    }
+
+    // Container untuk Top 2 dan Top 3
+    const top2and3Container = document.createElement('div');
+    top2and3Container.className = 'giver-container';
+
+    top3.slice(1, 3).forEach((giver, index) => {
+        const giverDiv = document.createElement('div');
+        giverDiv.className = `giver top-${index + 2}`;
+        giverDiv.innerHTML = `
+          <img src="${giver.profilePictureUrl}" class="profile" alt="Profile Picture" onerror="this.src='/default-avatar.png';">
+          <div>
+            <strong>TOP ${index + 2}</strong><br>
+            <strong>${giver.nickname}</strong><br>
+            <span>${giver.total_diamonds} POIN</span>
+          </div>
+        `;
+        top2and3Container.appendChild(giverDiv);
+        setRandomBorder(giverDiv.querySelector('.profile'));
+    });
+
+    container.appendChild(top2and3Container);
+}
+
+
+// Tambahkan animasi flip
+function addFlipAnimation() {
+    const givers = document.querySelectorAll('.giver');
+    givers.forEach((giver) => {
+        giver.classList.remove('flip-right', 'flip-left');
+        const randomDirection = Math.random() > 0.5 ? 'flip-right' : 'flip-left';
+        giver.classList.add(randomDirection);
+    });
+}
+
+// Fetch data setiap 10 detik
+fetchTopGivers();
+setInterval(fetchTopGivers, 10000);
+
+// Tambahkan animasi setiap 6 detik
+addFlipAnimation();
+setInterval(addFlipAnimation, 6000);
+
+</script>
+ 
