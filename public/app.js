@@ -68,13 +68,17 @@ $(document).ready(() => {
 
 
 function connect() {
-    let uniqueId = window.settings.username || $('#uniqueIdInput').val();
+   let uniqueId = window.settings.username || $('#uniqueIdInput').val();
+    
+    
     if (uniqueId !== '') {
-        $('#stateText').text('Connecting...');
+        
+        $('#stateText').text('Mohon tunggu jangan klik apapun dulu...');
+
         connection.connect(uniqueId, {
             enableExtendedGiftInfo: true
         }).then(state => {
-            $('#stateText').text(`Connected to roomId ${state.roomId}`);
+            $('#stateText').text(`Berhasil dikoneksikan`);
             scrollToTop();
             tutupmodal();
             masukanpoto();
@@ -104,11 +108,11 @@ function connect() {
                 }, 30000);
             }
         })
+
     } else {
         alert('no username entered');
     }
 }
-
 // Prevent Cross site scripting (XSS)
 function sanitize(text) {
     return text.replace(/</g, '&lt;')
@@ -160,65 +164,7 @@ if(komen==false || komen=="joined" || komen==""){
 
 // Fungsi untuk menambah gambar profil saat gift diberikan, ukuran sesuai diamond
 function addGiftItem(data) {
-    // if(data.diamondCount==1){
-    //     ajojing();
-    // }else if(data.diamondCount==5){
-    //     pokame();
-    // }else if(data.diamondCount==10){
-    //     cikini();
-    // }else if(data.diamondCount==20){
-    //     maemunah();
-    // }else if(data.diamondCount==30){
-    //     jandapirang();
-    // }else{
-    //     dumdum();
-    // }
-    // insert_gift(data.nickname,data.giftPictureUrl);
-     
-    // aktifSuara("makasih kak "+data.nickname+" sudah gift");
-     
     
-// openPopupTab(`<img class="img_profile" src="${data.profilePictureUrl}"> <br>makasih kak ${data.nickname}`);
-
-    // let c_imageProfile = location.href.includes('obs.html') ? $('.eventcontainer') : $('.imageProfile');
-   // let container = location.href.includes('obs.html') ? $('.eventcontainer') : $('.giftcontainer');
-   //     let artinama = location.href.includes('obs.html') ? $('.eventcontainer') : $('.nama');
-
-  
-   
- 
-   
-    // if (container.find('div').length > 200) {
-    //     container.find('div').slice(0, 100).remove();
-    // }
-
-    // let streakId = data.userId.toString() + '_' + data.giftId;
-    // aktifSuara("Terimakasih kak "+data.nickname+", semoga lancar rizkinya");
-    // let imageProfile = `<b> <b class='nickname' onclick='openPopupTab("${data.nickname}")'>${data.nickname}</b> <br> <img class="gifticon" src="${data.giftPictureUrl}">
-    // <br><img class="img_profile" src="${data.profilePictureUrl}"> <br>
-    // <span class='follow'>Yuk follow  @${generateUsernameLink(data)} </span>
-    // `;
-   // let html = `<img  style="width:100%" src="${data.profilePictureUrl}">`;
-   // let nama = data.nickname;
-
-    // let existingStreakItem = container.find(`[data-streakid='${streakId}']`);
-
-    // if (existingStreakItem.length) {
-    //     existingStreakItem.replaceWith(html);
-    // } else {
-    //    container.html(html);
-   //     artinama.html(nama);
-    // }
-    
-    // artinama.html(imageProfile);
-    // c_imageProfile.html(imageProfile);
-    // c_imageProfile.stop();
-
-
-    // container.stop();
-    // container.animate({
-    //     scrollTop: container[0].scrollHeight
-    // }, 800);
 }
 
 function moveRandomly(element) {
@@ -306,7 +252,7 @@ connection.on('like', (msg) => {
 
     if (typeof msg.likeCount === 'number') {
     //    addChatItem('#447dd4', msg, msg.label.replace('{0:user}', '').replace('likes', `${msg.likeCount} likes`),"","joined");
-    addPhoto("small",msg.profilePictureUrl);
+    addBubble("small",msg.profilePictureUrl);
     }
 })
 
@@ -325,7 +271,7 @@ connection.on('member', (msg) => {
     // setTimeout(() => {
         joinMsgDelay -= addDelay;
         // addChatItem('#21b2c2', msg, 'joined', true,"joined");
-        addPhoto("small",msg.profilePictureUrl);
+        addBubble("small",msg.profilePictureUrl);
        
       
         
@@ -361,21 +307,41 @@ connection.on('chat', (msg) => {
    // addChatItem('', msg, msg.comment,'',true);
      aktifSuaraKomen(msg.comment);
             // openPopupTab(``,`${msg.comment}`);
-            addPhoto("small",msg.profilePictureUrl);
-            addPhoto("small",msg.profilePictureUrl);
+            addBubble("small",msg.profilePictureUrl);
+            addBubble("small",msg.profilePictureUrl);
            
 })
 
+
+
+
 // New gift received
+let topGivers = {};
+
+let userDiamonds = {};
 var urut_doa = 0;
 connection.on('gift', (data) => {
     if (!isPendingStreak(data) && data.diamondCount > 0) {
-        diamondsCount += (data.diamondCount * data.repeatCount);
-        updateRoomStats();
+         const { uniqueId, nickname, profilePictureUrl, diamondCount, repeatCount } = data;
+  const diamonds = diamondCount * repeatCount;
+
+  // Simpan ke database
+  saveDiamondsToDatabase(uniqueId, nickname, profilePictureUrl, diamonds);
+
+  // Update atau tambahkan ke topGivers (logika lokal)
+  if (topGivers[uniqueId]) {
+    topGivers[uniqueId].total_diamonds += diamonds;
+  } else {
+    topGivers[uniqueId] = { uniqueId, nickname, profilePictureUrl, total_diamonds: diamonds };
+  }
+
+  // Perbarui tampilan
+  fetchTopGivers(); 
+
     }
 
     if (window.settings.showGifts === "0") return;
-
+     // updateGiftGivers(data);
     // addGiftItem(data);
     // gift(data.profilePictureUrl,data.nickname,true);
 
@@ -386,72 +352,87 @@ connection.on('gift', (data) => {
         
         for(i=1;i<=data.diamondCount;i++)
         {
-            addPhoto("medium",data.profilePictureUrl,data.diamondCount);
-            // addPhoto("small",data.profilePictureUrl);
-            // addPhoto("small",data.profilePictureUrl);
+            addBubble("medium",data.profilePictureUrl,data.diamondCount);
+            // addBubble("small",data.profilePictureUrl);
+            // addBubble("small",data.profilePictureUrl);
         }
         
     
         
         
     }else if(data.diamondCount<=10){
-
+onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
         for(i=1;i<=5;i++)
         {
-            addPhoto("medium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("medium",data.profilePictureUrl,data.diamondCount); 
         }
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
          
         for(i=1;i<=5;i++)
         {
-            addPhoto("small",data.profilePictureUrl);
+            addBubble("small",data.profilePictureUrl);
         }
+        estopAudio(0);
+        eplayAudio(0);
     }else if(data.diamondCount<=20){
+        bgklip(data.profilePictureUrl,data.diamondCount);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
 
         for(i=1;i<=5;i++)
         {
-            addPhoto("medium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("medium",data.profilePictureUrl,data.diamondCount); 
         }
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount);  
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount);  
          
         for(i=1;i<=20;i++)
         {
-            addPhoto("small",data.profilePictureUrl);
+            addBubble("small",data.profilePictureUrl);
         }
         //supersmall
-        addPhoto("supersmall",data.profilePictureUrl,data.diamondCount);
-        addPhoto("supersmall",data.profilePictureUrl,data.diamondCount);
- 
+        addBubble("supersmall",data.profilePictureUrl,data.diamondCount);
+        addBubble("supersmall",data.profilePictureUrl,data.diamondCount);
+        estopAudio(0);
+        estopAudio(1);
+      eplayAudio(1);
     }else if(data.diamondCount<=30){
-
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
         for(i=1;i<=5;i++)
         {
-            addPhoto("supermedium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supermedium",data.profilePictureUrl,data.diamondCount); 
         }
         
   
 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-        addPhoto("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
+        addBubble("large",data.profilePictureUrl,data.diamondCount); 
 
        
     
          
         for(i=1;i<=25;i++)
         {
-            addPhoto("supersmall",data.profilePictureUrl,data.diamondCount);
+            addBubble("supersmall",data.profilePictureUrl,data.diamondCount);
         }
+        bgklip(data.profilePictureUrl,data.diamondCount);
+        estopAudio(0);
+        estopAudio(1);
+        estopAudio(2);
+         
+        eplayAudio(2);
     }else if(data.diamondCount<=50){
-
- 
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
         for(i=1;i<=10;i++)
         {
-             addPhoto("large",data.profilePictureUrl,data.diamondCount); 
-            addPhoto("supermedium",data.profilePictureUrl,data.diamondCount); 
+             addBubble("large",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supermedium",data.profilePictureUrl,data.diamondCount); 
         }
       
         
@@ -461,19 +442,27 @@ connection.on('gift', (data) => {
         for(i=1;i<=40;i++)
         {
  
-            addPhoto("supersmall",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supersmall",data.profilePictureUrl,data.diamondCount); 
         }
-         
+        bgklip(data.profilePictureUrl,data.diamondCount);
+         estopAudio(0);
+        estopAudio(1);
+        estopAudio(2);
+          
+        eplayAudio(2);
     }else if(data.diamondCount<=100){
-
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
         for(i=1;i<=20;i++)
         {
-            addPhoto("supermedium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supermedium",data.profilePictureUrl,data.diamondCount); 
         }
         
         for(i=1;i<=15;i++)
         {
-             addPhoto("large",data.profilePictureUrl,data.diamondCount);  
+             addBubble("large",data.profilePictureUrl,data.diamondCount);  
         }
         
         
@@ -483,22 +472,27 @@ connection.on('gift', (data) => {
         for(i=1;i<=40;i++)
         {
             
-            addPhoto("supersmall",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supersmall",data.profilePictureUrl,data.diamondCount); 
         }
         
-         
+         bgklip(data.profilePictureUrl,data.diamondCount);
+          estopAudio(0);
+        estopAudio(1);
+        estopAudio(2);
+        estopAudio(3);
+        eplayAudio(3);
     }else if(data.diamondCount<=300){
-
-                 
+        
+          onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);        
                     
         for(i=1;i<=25;i++)
         {
-            addPhoto("supermedium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supermedium",data.profilePictureUrl,data.diamondCount); 
         }
         
         for(i=1;i<=20;i++)
         {
-             addPhoto("large",data.profilePictureUrl,data.diamondCount);  
+             addBubble("large",data.profilePictureUrl,data.diamondCount);  
         }
         
          
@@ -506,19 +500,22 @@ connection.on('gift', (data) => {
         
         for(i=1;i<=40;i++)
         {
-            addPhoto("supersmall",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supersmall",data.profilePictureUrl,data.diamondCount); 
         }
-        
-         
+        bgklip(data.profilePictureUrl,data.diamondCount);
+         estopAudio(0);
+        estopAudio(1);
+        estopAudio(2);
+        estopAudio(3);
+        estopAudio(4);
+        eplayAudio(4);
     }else{
         
          
-      
-                   
                     
        for(i=1;i<=35;i++)
         {
-            addPhoto("supermedium",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supermedium",data.profilePictureUrl,data.diamondCount); 
         }
         
         
@@ -526,20 +523,29 @@ connection.on('gift', (data) => {
         
         for(i=1;i<=30;i++)
         {
-             addPhoto("large",data.profilePictureUrl,data.diamondCount);  
+             addBubble("large",data.profilePictureUrl,data.diamondCount);  
         }
-       
-        
+       onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        onGift(data.nickname, data.profilePictureUrl, data.giftPictureUrl, true);
+        bgklip(data.profilePictureUrl,data.diamondCount);
+        estopAudio(0);
+        estopAudio(1);
+        estopAudio(2);
+        estopAudio(3);
+        estopAudio(4);
+        eplayAudio(4);
         for(i=1;i<=50;i++)
         {
-            addPhoto("supersmall",data.profilePictureUrl,data.diamondCount); 
+            addBubble("supersmall",data.profilePictureUrl,data.diamondCount); 
         }
-        
+        eplayAudio(3);
     }
 
 
+    
    
-     
 
       let jumlahElemen = array_doa.length;
       if(urut_doa>=(jumlahElemen-1)){
@@ -567,7 +573,8 @@ connection.on('gift', (data) => {
 
 
 
-        }     
+        }  
+         
 })
 
 // share, follow
@@ -577,10 +584,10 @@ connection.on('social', (data) => {
     let color = data.displayType.includes('follow') ? '#ff005e' : '#2fb816';
     if(color=='#ff005e'){
         aktifSuara("Terimakasih kak "+data.nickname+"  sudah jadikan aku teman","follow");
-        addPhoto("small",data.profilePictureUrl);
+        addBubble("small",data.profilePictureUrl);
     }else{
         aktifSuara("Terimakasih kak "+data.nickname+"  sudah sherr","share");
-        addPhoto("small",data.profilePictureUrl);
+        addBubble("small",data.profilePictureUrl);
     }
  
 })
